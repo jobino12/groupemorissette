@@ -1,0 +1,8 @@
+node_modules
+.next
+.turbo
+dist
+out
+pnpm-lock.yaml
+index.html
+invest/

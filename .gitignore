@@ -1,0 +1,42 @@
+node_modules
+.pnpm-store
+
+# Build output
+.next
+out
+dist
+.turbo
+
+# Env
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+
+# Test
+coverage
+
+# Expo
+.expo
+.expo-shared
+web-build
+
+# Sentry
+.sentryclirc

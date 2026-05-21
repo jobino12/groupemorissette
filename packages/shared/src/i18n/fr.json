@@ -1,0 +1,37 @@
+{
+  "common": {
+    "appName": "Groupe Morissette",
+    "loading": "Chargement…",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "create": "Créer",
+    "search": "Rechercher",
+    "language": "Langue",
+    "logout": "Déconnexion"
+  },
+  "nav": {
+    "dashboard": "Tableau de bord",
+    "customers": "Clients",
+    "workOrders": "Bons de travail",
+    "scheduling": "Planification",
+    "quotes": "Soumissions",
+    "invoices": "Factures",
+    "inventory": "Inventaire",
+    "purchasing": "Achats",
+    "reports": "Rapports",
+    "settings": "Paramètres"
+  },
+  "auth": {
+    "signIn": "Connexion",
+    "email": "Courriel",
+    "password": "Mot de passe",
+    "signInButton": "Se connecter",
+    "invalidCredentials": "Identifiants invalides"
+  },
+  "dashboard": {
+    "title": "Tableau de bord",
+    "welcome": "Bienvenue"
+  }
+}
