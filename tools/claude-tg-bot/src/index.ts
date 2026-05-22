@@ -68,7 +68,7 @@ async function runTurn(
   };
 
   try {
-    const basePrefix = buildContextPrefix(ctx.chat.id, opts.attachedPaths ?? []);
+    const basePrefix = buildContextPrefix(ctx.chat.id, session.cwd, opts.attachedPaths ?? []);
     const voiceConcise = replyAsVoice
       ? "[This reply will be spoken aloud via TTS. Be conversational and concise — under 3 short sentences unless I explicitly asked for detail. No code blocks, no lists, no markdown.]\n\n"
       : "";
@@ -135,7 +135,7 @@ async function runOpusBackground(ctx: Context, prompt: string): Promise<void> {
   const turnStart = Date.now();
   let buf = "";
   try {
-    const prefix = buildContextPrefix(chatId);
+    const prefix = buildContextPrefix(chatId, session.cwd);
     for await (const ev of runClaude(session, prompt, {
       contextPrefix: prefix,
       model: config.heavyModel,

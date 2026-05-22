@@ -1,4 +1,4 @@
-import { existsSync, mkdirSync, readdirSync, statSync } from "node:fs";
+import { existsSync, mkdirSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { basename, join } from "node:path";
 import { pipeline } from "node:stream/promises";
 import { createWriteStream } from "node:fs";
@@ -75,8 +75,25 @@ export async function deliverOutboxFiles(
   }
 }
 
+const MAX_CLAUDE_MD_BYTES = 32 * 1024;
+
+function readProjectContext(cwd: string): string {
+  const path = join(cwd, "CLAUDE.md");
+  if (!existsSync(path)) return "";
+  try {
+    const buf = readFileSync(path, "utf8");
+    const trimmed = buf.length > MAX_CLAUDE_MD_BYTES
+      ? buf.slice(0, MAX_CLAUDE_MD_BYTES) + "\n[... CLAUDE.md truncated ...]"
+      : buf;
+    return trimmed;
+  } catch {
+    return "";
+  }
+}
+
 export function buildContextPrefix(
   chatId: number,
+  cwd: string,
   attachedInboxPaths: string[] = [],
 ): string {
   const lines = [
@@ -88,6 +105,15 @@ export function buildContextPrefix(
   if (attachedInboxPaths.length) {
     lines.push("", "I just attached the following file(s) — they are saved at:");
     for (const p of attachedInboxPaths) lines.push(`- ${p}`);
+  }
+  const projectContext = readProjectContext(cwd);
+  if (projectContext) {
+    lines.push(
+      "",
+      `Project context from ${join(cwd, "CLAUDE.md")} — treat these as standing instructions:`,
+      "",
+      projectContext,
+    );
   }
   lines.push("", "---", "");
   return lines.join("\n");

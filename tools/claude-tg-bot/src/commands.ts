@@ -53,7 +53,8 @@ export function registerCommands(bot: Telegraf): void {
       return ctx.reply(`Not a directory: ${target}`);
     }
     setCwd(ctx.chat.id, target);
-    await ctx.reply(`cwd → ${target}`);
+    resetSession(ctx.chat.id);
+    await ctx.reply(`cwd → ${target}\n(session reset so Claude picks up the new directory's CLAUDE.md)`);
   });
 
   bot.command("reset", async (ctx) => {

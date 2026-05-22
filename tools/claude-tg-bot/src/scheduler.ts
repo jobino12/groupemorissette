@@ -37,7 +37,7 @@ function scheduleOne(bot: Telegraf, job: JobRow): void {
     let doneCost: number | undefined;
     let doneTurns = 1;
     try {
-      const prefix = buildContextPrefix(job.chat_id);
+      const prefix = buildContextPrefix(job.chat_id, session.cwd);
       for await (const ev of runClaude(session, job.prompt, {
         contextPrefix: prefix,
         model: config.heavyModel,
