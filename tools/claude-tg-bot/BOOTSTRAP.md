@@ -28,6 +28,33 @@ which claude  # should print the claude binary location
 
 > Your iMac is Intel, so node will be at `/usr/local/bin/node` — that's what the bundled launchd plist assumes.
 
+### Voice (free, local)
+
+Speech-to-text via whisper.cpp, text-to-speech via macOS `say` (Canadian French
+voice "Amélie"). All local, zero per-message cost.
+
+```sh
+brew install whisper-cpp ffmpeg
+
+# Download the French-capable small model (~250MB).
+# Lives wherever DATA_DIR points; default is ./data/models.
+mkdir -p ~/code/claude-tg-bot/data/models
+curl -L -o ~/code/claude-tg-bot/data/models/ggml-small.bin \
+  https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-small.bin
+
+# Confirm the binaries are reachable.
+which whisper-cli ffmpeg
+say -v Amelie "Bonjour, je suis prête."   # you should hear Amélie speak
+```
+
+Notes:
+- Transcription on a 2015 iMac takes roughly 0.5–1× the audio length with the
+  `small` model. A 30-second voice note → ~30s of CPU work. Upgrade to
+  `ggml-medium.bin` (~1.5GB) if you want better accuracy and don't mind ~2×
+  slower; same URL pattern.
+- Other macOS voices: `say -v ?` lists ~80 options. Set `TTS_VOICE=` in `.env`
+  (e.g. `Thomas` for France French, `Daniel` for British English).
+
 ### Scraping + modeling toolkit (for the M&A use case)
 
 Install once so Claude has these ready when you ask for scrapes, models, decks:

@@ -23,9 +23,16 @@ db.exec(`
     chat_id INTEGER PRIMARY KEY,
     session_id TEXT,
     cwd TEXT NOT NULL,
+    voice_mode TEXT NOT NULL DEFAULT 'auto',
     updated_at INTEGER NOT NULL DEFAULT (strftime('%s','now'))
   );
 `);
+
+// Idempotent migration for existing DBs created before voice_mode existed.
+const cols = db.prepare("PRAGMA table_info(sessions)").all() as Array<{ name: string }>;
+if (!cols.some((c) => c.name === "voice_mode")) {
+  db.exec("ALTER TABLE sessions ADD COLUMN voice_mode TEXT NOT NULL DEFAULT 'auto'");
+}
 
 export type JobRow = {
   id: number;
@@ -37,9 +44,12 @@ export type JobRow = {
   created_at: number;
 };
 
+export type VoiceMode = "auto" | "voice" | "text";
+
 export type SessionRow = {
   chat_id: number;
   session_id: string | null;
   cwd: string;
+  voice_mode: VoiceMode;
   updated_at: number;
 };

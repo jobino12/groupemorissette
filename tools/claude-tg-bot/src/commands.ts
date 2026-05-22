@@ -3,7 +3,13 @@ import { homedir } from "node:os";
 import { resolve } from "node:path";
 import type { Context, Telegraf } from "telegraf";
 import { addJob, cancelJob, listJobs } from "./scheduler.js";
-import { getOrCreateSession, resetSession, setCwd } from "./sessions.js";
+import {
+  getOrCreateSession,
+  resetSession,
+  setCwd,
+  setVoiceMode,
+} from "./sessions.js";
+import type { VoiceMode } from "./db.js";
 
 const HELP = `Hi! I'm your Claude home-Mac bot.
 
@@ -14,6 +20,7 @@ Commands:
 /reset — start a fresh Claude session for this chat
 /pwd — show the working directory Claude is using
 /cd <path> — change Claude's working directory (e.g. /cd ~/code/groupemorissette)
+/voice <auto|on|off> — reply mode. auto = match input (voice→voice, text→text)
 /schedule <cron> | <prompt> — schedule a recurring prompt
   e.g. /schedule 0 9 * * 1-5 | summarize overnight CI activity
 /jobs — list scheduled jobs in this chat
@@ -49,6 +56,20 @@ export function registerCommands(bot: Telegraf): void {
   bot.command("reset", async (ctx) => {
     resetSession(ctx.chat.id);
     await ctx.reply("Session cleared. Next message starts fresh.");
+  });
+
+  bot.command("voice", async (ctx) => {
+    const arg = stripCommand(ctx).toLowerCase();
+    const valid: Record<string, VoiceMode> = { auto: "auto", on: "voice", off: "text", voice: "voice", text: "text" };
+    const mode = valid[arg];
+    if (!mode) {
+      const current = getOrCreateSession(ctx.chat.id).voiceMode;
+      return ctx.reply(
+        `Voice mode: ${current}\nUsage: /voice <auto|on|off>\n  auto — voice in → voice out, text in → text out\n  on — always reply with voice\n  off — always reply with text`,
+      );
+    }
+    setVoiceMode(ctx.chat.id, mode);
+    await ctx.reply(`Voice mode → ${mode}`);
   });
 
   bot.command("schedule", async (ctx) => {

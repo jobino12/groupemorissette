@@ -1,3 +1,4 @@
+import { unlinkSync } from "node:fs";
 import { Context, Telegraf } from "telegraf";
 import { authMiddleware } from "./auth.js";
 import { runClaude } from "./claude.js";
@@ -13,25 +14,48 @@ import { log } from "./logger.js";
 import { bootScheduler } from "./scheduler.js";
 import { getOrCreateSession } from "./sessions.js";
 import { chunkForTelegram } from "./telegram.js";
+import { splitForTts, synthesizeSpeech, transcribeVoice } from "./voice.js";
 
 const bot = new Telegraf(config.telegramToken);
 
 bot.use(authMiddleware);
 registerCommands(bot);
 
+async function replyWithVoice(ctx: Context, text: string): Promise<void> {
+  if (!ctx.chat) return;
+  for (const part of splitForTts(text)) {
+    if (!part.trim()) continue;
+    try {
+      const ogaPath = await synthesizeSpeech(part);
+      await ctx.replyWithVoice({ source: ogaPath });
+      try {
+        unlinkSync(ogaPath);
+      } catch {}
+    } catch (err) {
+      log.error({ err }, "voice.synth_failed");
+      await ctx.reply(part).catch(() => {});
+    }
+  }
+}
+
 async function runTurn(
   ctx: Context,
   userText: string,
-  attachedPaths: string[] = [],
+  opts: { attachedPaths?: string[]; replyAsVoice?: boolean } = {},
 ): Promise<void> {
   if (!ctx.chat) return;
   const session = getOrCreateSession(ctx.chat.id);
-  const typing = setInterval(() => ctx.sendChatAction("typing").catch(() => {}), 4000);
-  ctx.sendChatAction("typing").catch(() => {});
+  const replyAsVoice =
+    opts.replyAsVoice ?? (session.voiceMode === "voice");
+  const typing = setInterval(
+    () => ctx.sendChatAction(replyAsVoice ? "record_voice" : "typing").catch(() => {}),
+    4000,
+  );
+  ctx.sendChatAction(replyAsVoice ? "record_voice" : "typing").catch(() => {});
   const turnStart = Date.now();
 
   let buf = "";
-  const flush = async (force = false) => {
+  const flushText = async (force = false) => {
     if (!buf) return;
     if (!force && buf.length < 3500) return;
     const out = buf;
@@ -42,21 +66,29 @@ async function runTurn(
   };
 
   try {
-    const prefix = buildContextPrefix(ctx.chat.id, attachedPaths);
+    const prefix = buildContextPrefix(ctx.chat.id, opts.attachedPaths ?? []);
     for await (const ev of runClaude(session, userText, prefix)) {
       if (ev.kind === "text") {
         buf += ev.text;
-        await flush(false);
+        if (!replyAsVoice) await flushText(false);
       } else if (ev.kind === "tool") {
-        await flush(true);
-        await ctx.reply(`→ ${ev.name} ${ev.brief}`).catch(() => {});
+        if (!replyAsVoice) {
+          await flushText(true);
+          await ctx.reply(`→ ${ev.name} ${ev.brief}`).catch(() => {});
+        }
       } else if (ev.kind === "error") {
-        await flush(true);
+        if (!replyAsVoice) await flushText(true);
         await ctx.reply(`⚠️ ${ev.message}`).catch(() => {});
       } else if (ev.kind === "session") {
         log.info({ chatId: ctx.chat.id, sessionId: ev.sessionId }, "session.new");
       } else if (ev.kind === "done") {
-        await flush(true);
+        if (replyAsVoice) {
+          const finalText = buf.trim();
+          buf = "";
+          if (finalText) await replyWithVoice(ctx, finalText);
+        } else {
+          await flushText(true);
+        }
         if (ev.costUsd != null) {
           log.info(
             { chatId: ctx.chat.id, costUsd: ev.costUsd, durationMs: ev.durationMs, numTurns: ev.numTurns },
@@ -87,7 +119,7 @@ bot.on("document", async (ctx) => {
   try {
     const localPath = await downloadTelegramFile(bot, doc.file_id, ctx.chat.id, doc.file_name ?? doc.file_id);
     const prompt = caption || `I just sent you a file. Note its location for now; I'll tell you what to do with it.`;
-    await runTurn(ctx, prompt, [localPath]);
+    await runTurn(ctx, prompt, { attachedPaths: [localPath] });
   } catch (err) {
     log.error({ err }, "document.handler_failed");
     await ctx.reply(`Could not save file: ${err instanceof Error ? err.message : err}`);
@@ -101,10 +133,37 @@ bot.on("photo", async (ctx) => {
   try {
     const localPath = await downloadTelegramFile(bot, largest.file_id, ctx.chat.id, `${largest.file_unique_id}.jpg`);
     const prompt = caption || `I just sent you a photo. Note its location for now; I'll tell you what to do with it.`;
-    await runTurn(ctx, prompt, [localPath]);
+    await runTurn(ctx, prompt, { attachedPaths: [localPath] });
   } catch (err) {
     log.error({ err }, "photo.handler_failed");
     await ctx.reply(`Could not save photo: ${err instanceof Error ? err.message : err}`);
+  }
+});
+
+bot.on("voice", async (ctx) => {
+  const voice = ctx.message.voice;
+  const session = getOrCreateSession(ctx.chat.id);
+  await ctx.sendChatAction("typing").catch(() => {});
+  let localPath: string | null = null;
+  try {
+    localPath = await downloadTelegramFile(bot, voice.file_id, ctx.chat.id, `${voice.file_unique_id}.oga`);
+    const transcript = await transcribeVoice(localPath);
+    if (!transcript) {
+      await ctx.reply("(couldn't make out anything in that voice note)").catch(() => {});
+      return;
+    }
+    await ctx.reply(`📝 ${transcript}`).catch(() => {});
+    const replyAsVoice = session.voiceMode === "voice" || session.voiceMode === "auto";
+    await runTurn(ctx, transcript, { replyAsVoice });
+  } catch (err) {
+    log.error({ err }, "voice.handler_failed");
+    await ctx.reply(`Voice handling failed: ${err instanceof Error ? err.message : err}`).catch(() => {});
+  } finally {
+    if (localPath) {
+      try {
+        unlinkSync(localPath);
+      } catch {}
+    }
   }
 });
 
