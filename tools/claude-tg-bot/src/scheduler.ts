@@ -1,6 +1,11 @@
 import cron from "node-cron";
 import { Telegraf } from "telegraf";
 import { db, type JobRow } from "./db.js";
+import {
+  buildContextPrefix,
+  collectOutboxFilesSince,
+  deliverOutboxFiles,
+} from "./files.js";
 import { log } from "./logger.js";
 import { runClaude } from "./claude.js";
 import { getOrCreateSession } from "./sessions.js";
@@ -25,9 +30,11 @@ function scheduleOne(bot: Telegraf, job: JobRow): void {
     log.info({ jobId: job.id, chatId: job.chat_id }, "scheduler.fire");
     const session = getOrCreateSession(job.chat_id);
     if (job.cwd) session.cwd = job.cwd;
+    const turnStart = Date.now();
     let buf = "";
     try {
-      for await (const ev of runClaude(session, job.prompt)) {
+      const prefix = buildContextPrefix(job.chat_id);
+      for await (const ev of runClaude(session, job.prompt, prefix)) {
         if (ev.kind === "text") buf += ev.text;
         else if (ev.kind === "error") buf += `\n\n[error] ${ev.message}`;
       }
@@ -36,6 +43,8 @@ function scheduleOne(bot: Telegraf, job: JobRow): void {
       for (const chunk of chunkForTelegram(header + body)) {
         await bot.telegram.sendMessage(job.chat_id, chunk);
       }
+      const newFiles = collectOutboxFilesSince(job.chat_id, turnStart);
+      if (newFiles.length) await deliverOutboxFiles(bot, job.chat_id, newFiles);
     } catch (err) {
       log.error({ err, jobId: job.id }, "scheduler.job_failed");
       await bot.telegram

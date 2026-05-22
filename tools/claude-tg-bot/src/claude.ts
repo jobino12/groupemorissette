@@ -27,6 +27,7 @@ function truncate(s: string, max: number): string {
 export async function* runClaude(
   session: ChatSession,
   userText: string,
+  contextPrefix = "",
 ): AsyncGenerator<ClaudeEvent, void, undefined> {
   const options: Record<string, unknown> = {
     cwd: session.cwd,
@@ -36,8 +37,10 @@ export async function* runClaude(
 
   log.info({ chatId: session.chatId, cwd: session.cwd, resume: session.sessionId ?? null }, "claude.start");
 
+  const prompt = contextPrefix ? `${contextPrefix}${userText}` : userText;
+
   try {
-    for await (const message of query({ prompt: userText, options: options as never })) {
+    for await (const message of query({ prompt, options: options as never })) {
       const m = message as { type: string; [k: string]: unknown };
 
       if (m.type === "system" && (m as { subtype?: string }).subtype === "init") {

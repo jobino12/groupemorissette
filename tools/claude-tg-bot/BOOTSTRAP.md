@@ -19,7 +19,7 @@ After it finishes, follow the on-screen instructions to add `brew` to your PATH 
 ## 2. Install runtime + tools
 
 ```sh
-brew install node@20 tailscale
+brew install node@20 tailscale python@3.12
 brew link --overwrite node@20
 npm install -g @anthropic-ai/claude-code
 which node    # confirm something like /usr/local/bin/node on Intel, /opt/homebrew/bin/node on Apple Silicon
@@ -27,6 +27,22 @@ which claude  # should print the claude binary location
 ```
 
 > Your iMac is Intel, so node will be at `/usr/local/bin/node` — that's what the bundled launchd plist assumes.
+
+### Scraping + modeling toolkit (for the M&A use case)
+
+Install once so Claude has these ready when you ask for scrapes, models, decks:
+
+```sh
+# Headless browser (Playwright) — for REQ, RBQ, Reprenariat Québec, generic web scrapes
+npm install -g playwright
+playwright install chromium
+
+# Python toolkit for models and decks
+python3 -m pip install --user --upgrade pip
+python3 -m pip install --user pandas openpyxl python-pptx beautifulsoup4 lxml requests rich
+```
+
+You don't need to know how to use any of these — Claude will reach for them on its own when you ask it to "scrape", "build a model", or "make a teaser deck".
 
 ## 3. Log into Claude with your Max account
 
@@ -165,6 +181,41 @@ System Settings → Battery / Energy Saver:
 - **Wake for network access**: ON
 
 If you want bulletproofing, also: `sudo pmset -a sleep 0 disksleep 0 displaysleep 30 powernap 0`.
+
+## 10b. Wire up the M&A project context
+
+```sh
+mkdir -p ~/code/groupemorissette-ma
+cp ~/code/claude-tg-bot/docs/groupemorissette-ma-CLAUDE.md ~/code/groupemorissette-ma/CLAUDE.md
+# Open the file, fill in the TODOs (criteria, geography, deal-size band, etc.)
+cd ~/code/groupemorissette-ma && git init && git add . && git commit -m "Initial M&A context"
+```
+
+Then from your Telegram bot, point a new chat at it:
+
+```
+/cd ~/code/groupemorissette-ma
+```
+
+From this point on, every Claude session in that chat reads `CLAUDE.md`
+automatically — no need to re-explain the project.
+
+## 10c. Seed your first scheduled jobs
+
+Open the bot in Telegram and run these once. Adjust the cron expressions and
+prompts to your taste — `/jobs` lists them, `/cancel <id>` removes one.
+
+```
+/cd ~/code/groupemorissette-ma
+```
+
+```
+/schedule 0 8 * * 1 | Weekly source scan. Check Reprenariat Québec (login with REPRENARIAT_QC_EMAIL / REPRENARIAT_QC_PASSWORD via Playwright), REQ new incorporations in our target industries this week, and RBQ licensee changes. Save raw snapshots to data/snapshots/, diff against last week, and post the top 5 most promising new leads with source links + 5-line qualification each. Append qualified leads to pipeline/targets.csv.
+```
+
+```
+/schedule 0 16 * * 5 | Friday pipeline summary. Read pipeline/targets.csv and produce: (1) counts by status, (2) the 3 most interesting active targets and what the next step is for each, (3) anything aging > 30 days with no activity. Save a Markdown summary to outbox as `weekly-pipeline-<YYYY-MM-DD>.md` and message me the highlights.
+```
 
 ## 11. End-to-end verification
 
