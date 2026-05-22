@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.sam.claude-tg-bot</string>
+
+  <!--
+    Replace __USER__ with your macOS short username (output of `whoami`).
+    Replace the node path with `which node` output if it's not at /opt/homebrew/bin/node.
+    Apple Silicon Homebrew: /opt/homebrew/bin/node
+    Intel Homebrew (likely your 2015 iMac): /usr/local/bin/node
+  -->
+  <key>ProgramArguments</key>
+  <array>
+    <string>/usr/local/bin/node</string>
+    <string>/Users/__USER__/code/claude-tg-bot/dist/index.js</string>
+  </array>
+
+  <key>WorkingDirectory</key>
+  <string>/Users/__USER__/code/claude-tg-bot</string>
+
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key>
+    <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin</string>
+    <key>HOME</key>
+    <string>/Users/__USER__</string>
+    <key>NODE_ENV</key>
+    <string>production</string>
+  </dict>
+
+  <key>RunAtLoad</key>
+  <true/>
+
+  <key>KeepAlive</key>
+  <true/>
+
+  <key>ProcessType</key>
+  <string>Interactive</string>
+
+  <key>StandardOutPath</key>
+  <string>/Users/__USER__/Library/Logs/claude-tg-bot.log</string>
+  <key>StandardErrorPath</key>
+  <string>/Users/__USER__/Library/Logs/claude-tg-bot.err.log</string>
+</dict>
+</plist>
