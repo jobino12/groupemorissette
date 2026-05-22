@@ -24,18 +24,29 @@ function truncate(s: string, max: number): string {
   return s.length > max ? s.slice(0, max - 1) + "…" : s;
 }
 
+export type RunClaudeOptions = {
+  contextPrefix?: string;
+  model?: string;
+  isolatedSession?: boolean; // don't resume chat's session_id and don't persist a new one
+};
+
 export async function* runClaude(
   session: ChatSession,
   userText: string,
-  contextPrefix = "",
+  opts: RunClaudeOptions = {},
 ): AsyncGenerator<ClaudeEvent, void, undefined> {
+  const { contextPrefix = "", model, isolatedSession = false } = opts;
   const options: Record<string, unknown> = {
     cwd: session.cwd,
     permissionMode: "bypassPermissions",
   };
-  if (session.sessionId) options.resume = session.sessionId;
+  if (model) options.model = model;
+  if (!isolatedSession && session.sessionId) options.resume = session.sessionId;
 
-  log.info({ chatId: session.chatId, cwd: session.cwd, resume: session.sessionId ?? null }, "claude.start");
+  log.info(
+    { chatId: session.chatId, cwd: session.cwd, model, resume: !isolatedSession ? session.sessionId ?? null : null },
+    "claude.start",
+  );
 
   const prompt = contextPrefix ? `${contextPrefix}${userText}` : userText;
 
@@ -45,7 +56,7 @@ export async function* runClaude(
 
       if (m.type === "system" && (m as { subtype?: string }).subtype === "init") {
         const sid = (m as { session_id?: string }).session_id;
-        if (sid && sid !== session.sessionId) {
+        if (sid && !isolatedSession && sid !== session.sessionId) {
           setSessionId(session.chatId, sid);
           session.sessionId = sid;
           yield { kind: "session", sessionId: sid };

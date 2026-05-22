@@ -23,6 +23,7 @@ Commands:
 /cd <path> — change Claude's working directory (e.g. /cd ~/code/groupemorissette)
 /voice <auto|on|off> — reply mode. auto = match input (voice→voice, text→text)
 /usage — show current Claude usage (5-hour + weekly windows)
+/opus <prompt> — run a heavy/deep task against Opus in the background (doesn't block chat)
 /schedule <cron> | <prompt> — schedule a recurring prompt
   e.g. /schedule 0 9 * * 1-5 | summarize overnight CI activity
 /jobs — list scheduled jobs in this chat

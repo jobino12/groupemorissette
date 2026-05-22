@@ -23,6 +23,8 @@ export const config = {
     }),
   defaultCwd: expand(process.env.DEFAULT_CWD ?? `${homedir()}/code`),
   dataDir: expand(process.env.DATA_DIR ?? "./data"),
+  chatModel: process.env.CHAT_MODEL ?? "claude-sonnet-4-6",
+  heavyModel: process.env.HEAVY_MODEL ?? "claude-opus-4-7",
 };
 
 if (process.env.ANTHROPIC_API_KEY) {

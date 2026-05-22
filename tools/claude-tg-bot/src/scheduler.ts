@@ -1,5 +1,6 @@
 import cron from "node-cron";
 import { Telegraf } from "telegraf";
+import { config } from "./config.js";
 import { db, type JobRow } from "./db.js";
 import {
   buildContextPrefix,
@@ -37,7 +38,10 @@ function scheduleOne(bot: Telegraf, job: JobRow): void {
     let doneTurns = 1;
     try {
       const prefix = buildContextPrefix(job.chat_id);
-      for await (const ev of runClaude(session, job.prompt, prefix)) {
+      for await (const ev of runClaude(session, job.prompt, {
+        contextPrefix: prefix,
+        model: config.heavyModel,
+      })) {
         if (ev.kind === "text") buf += ev.text;
         else if (ev.kind === "error") buf += `\n\n[error] ${ev.message}`;
         else if (ev.kind === "done") {

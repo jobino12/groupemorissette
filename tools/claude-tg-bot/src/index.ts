@@ -68,8 +68,15 @@ async function runTurn(
   };
 
   try {
-    const prefix = buildContextPrefix(ctx.chat.id, opts.attachedPaths ?? []);
-    for await (const ev of runClaude(session, userText, prefix)) {
+    const basePrefix = buildContextPrefix(ctx.chat.id, opts.attachedPaths ?? []);
+    const voiceConcise = replyAsVoice
+      ? "[This reply will be spoken aloud via TTS. Be conversational and concise — under 3 short sentences unless I explicitly asked for detail. No code blocks, no lists, no markdown.]\n\n"
+      : "";
+    const prefix = basePrefix + voiceConcise;
+    for await (const ev of runClaude(session, userText, {
+      contextPrefix: prefix,
+      model: config.chatModel,
+    })) {
       if (ev.kind === "text") {
         buf += ev.text;
         if (!replyAsVoice) await flushText(false);
@@ -107,6 +114,55 @@ async function runTurn(
     clearInterval(typing);
     const newFiles = collectOutboxFilesSince(ctx.chat.id, turnStart);
     if (newFiles.length) await deliverOutboxFiles(bot, ctx.chat.id, newFiles);
+  }
+}
+
+bot.command("opus", async (ctx) => {
+  const text = ctx.message.text;
+  const space = text.indexOf(" ");
+  const prompt = space === -1 ? "" : text.slice(space + 1).trim();
+  if (!prompt) {
+    return ctx.reply("Usage: /opus <prompt>\nRuns the prompt against the heavy model (Opus) in an isolated session — won't touch your current chat session. Result arrives when ready.");
+  }
+  await ctx.reply(`🧠 On it with Opus. I'll keep chatting normally; the result will arrive here when done.`);
+  void runOpusBackground(ctx, prompt);
+});
+
+async function runOpusBackground(ctx: Context, prompt: string): Promise<void> {
+  if (!ctx.chat) return;
+  const chatId = ctx.chat.id;
+  const session = getOrCreateSession(chatId);
+  const turnStart = Date.now();
+  let buf = "";
+  try {
+    const prefix = buildContextPrefix(chatId);
+    for await (const ev of runClaude(session, prompt, {
+      contextPrefix: prefix,
+      model: config.heavyModel,
+      isolatedSession: true,
+    })) {
+      if (ev.kind === "text") buf += ev.text;
+      else if (ev.kind === "tool") {
+        await bot.telegram.sendMessage(chatId, `→ ${ev.name} ${ev.brief}`).catch(() => {});
+      } else if (ev.kind === "error") {
+        await bot.telegram.sendMessage(chatId, `⚠️ ${ev.message}`).catch(() => {});
+      } else if (ev.kind === "done") {
+        const finalText = buf.trim() || "(no output)";
+        const header = "🧠 Opus result:\n\n";
+        for (const chunk of chunkForTelegram(header + finalText)) {
+          await bot.telegram.sendMessage(chatId, chunk).catch(() => {});
+        }
+        await recordTurn(chatId, ev.numTurns ?? 1, ev.costUsd);
+      }
+    }
+  } catch (err) {
+    log.error({ err, chatId }, "opus.background_failed");
+    await bot.telegram
+      .sendMessage(chatId, `Opus run failed: ${err instanceof Error ? err.message : err}`)
+      .catch(() => {});
+  } finally {
+    const newFiles = collectOutboxFilesSince(chatId, turnStart);
+    if (newFiles.length) await deliverOutboxFiles(bot, chatId, newFiles);
   }
 }
 
