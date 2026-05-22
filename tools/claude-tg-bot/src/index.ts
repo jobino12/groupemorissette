@@ -15,7 +15,7 @@ import { bootScheduler } from "./scheduler.js";
 import { getOrCreateSession } from "./sessions.js";
 import { chunkForTelegram } from "./telegram.js";
 import { initUsage, recordTurn } from "./usage.js";
-import { splitForTts, synthesizeSpeech, transcribeVoice } from "./voice.js";
+import { detectLang, splitForTts, synthesizeSpeech, transcribeVoice } from "./voice.js";
 
 const bot = new Telegraf(config.telegramToken);
 
@@ -24,10 +24,11 @@ registerCommands(bot);
 
 async function replyWithVoice(ctx: Context, text: string): Promise<void> {
   if (!ctx.chat) return;
+  const replyLang = detectLang(text);
   for (const part of splitForTts(text)) {
     if (!part.trim()) continue;
     try {
-      const ogaPath = await synthesizeSpeech(part);
+      const ogaPath = await synthesizeSpeech(part, replyLang);
       await ctx.replyWithVoice({ source: ogaPath });
       try {
         unlinkSync(ogaPath);

@@ -49,11 +49,41 @@ say -v Amelie "Bonjour, je suis prête."   # you should hear Amélie speak
 
 Notes:
 - Transcription on a 2015 iMac takes roughly 0.5–1× the audio length with the
-  `small` model. A 30-second voice note → ~30s of CPU work. Upgrade to
-  `ggml-medium.bin` (~1.5GB) if you want better accuracy and don't mind ~2×
-  slower; same URL pattern.
-- Other macOS voices: `say -v ?` lists ~80 options. Set `TTS_VOICE=` in `.env`
-  (e.g. `Thomas` for France French, `Daniel` for British English).
+  `small` model (handles French + English fine via `-l auto`). A 30-second
+  voice note → ~30s of CPU work. Upgrade to `ggml-medium.bin` (~1.5GB) if you
+  want better accuracy and don't mind ~2× slower; same URL pattern.
+
+#### Bilingual male voice ("Steve")
+
+Whisper auto-detects the language going in. For replies, the bot picks a voice
+per reply based on what language Claude responded in — French gets
+`TTS_VOICE_FR`, English gets `TTS_VOICE_EN`. Defaults are male voices that
+ship with macOS:
+
+| Lang | Default | Quality | Alternatives |
+|------|---------|---------|--------------|
+| French | **Thomas** (fr-FR) | Built-in, decent | **Felix** (fr-CA, Premium download) for Quebec accent |
+| English | **Daniel** (en-GB) | Built-in, decent | **Steve** (en-US, Premium), **Aaron** / **Tom** (en-US, built-in) |
+
+To preview voices:
+
+```sh
+say -v Thomas "Bonjour, je suis Steve."
+say -v Daniel "Hello, I'm Steve."
+say -v ?     # list every installed voice
+```
+
+To install Premium voices (for higher quality or fr-CA male):
+
+1. System Settings → **Accessibility** → **Spoken Content**
+2. **System Voice** → **Manage Voices…**
+3. Tick the boxes for *Felix (French — Canada)* and *Steve (English — United States)*. ~100MB each.
+4. Once downloaded, set in `.env`:
+   ```
+   TTS_VOICE_FR=Felix
+   TTS_VOICE_EN=Steve
+   ```
+5. Restart the bot: `launchctl kickstart -k gui/$(id -u)/com.sam.claude-tg-bot`
 
 ### Scraping + modeling toolkit (for the M&A use case)
 

@@ -3,6 +3,7 @@ import { existsSync, mkdirSync, readFileSync, unlinkSync, writeFileSync } from "
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { promisify } from "node:util";
+import { franc } from "franc-min";
 import { config } from "./config.js";
 import { log } from "./logger.js";
 
@@ -11,7 +12,8 @@ const exec = promisify(execFile);
 const WHISPER_BIN = process.env.WHISPER_BIN ?? "whisper-cli";
 const WHISPER_MODEL =
   process.env.WHISPER_MODEL_PATH ?? `${config.dataDir}/models/ggml-small.bin`;
-const TTS_VOICE = process.env.TTS_VOICE ?? "Amelie"; // macOS Canadian French
+const TTS_VOICE_FR = process.env.TTS_VOICE_FR ?? "Thomas";
+const TTS_VOICE_EN = process.env.TTS_VOICE_EN ?? "Daniel";
 const FFMPEG_BIN = process.env.FFMPEG_BIN ?? "ffmpeg";
 const TMP_DIR = join(tmpdir(), "claude-tg-bot");
 mkdirSync(TMP_DIR, { recursive: true });
@@ -28,6 +30,17 @@ async function run(bin: string, args: string[]): Promise<string> {
     const e = err as { stderr?: string; message?: string };
     throw new Error(`${bin} failed: ${e.stderr?.toString() ?? e.message ?? err}`);
   }
+}
+
+export type Lang = "fr" | "en";
+
+export function detectLang(text: string, fallback: Lang = "en"): Lang {
+  const trimmed = text.trim();
+  if (trimmed.length < 20) return fallback;
+  const code = franc(trimmed, { only: ["fra", "eng"] });
+  if (code === "fra") return "fr";
+  if (code === "eng") return "en";
+  return fallback;
 }
 
 export async function transcribeVoice(oggPath: string): Promise<string> {
@@ -73,12 +86,14 @@ export async function transcribeVoice(oggPath: string): Promise<string> {
   return text;
 }
 
-export async function synthesizeSpeech(text: string): Promise<string> {
+export async function synthesizeSpeech(text: string, lang?: Lang): Promise<string> {
+  const resolvedLang = lang ?? detectLang(text);
+  const voice = resolvedLang === "fr" ? TTS_VOICE_FR : TTS_VOICE_EN;
   const aiff = tmpPath("aiff");
   const oga = tmpPath("oga");
   const textFile = tmpPath("txt");
   writeFileSync(textFile, text, "utf8");
-  await run("say", ["-v", TTS_VOICE, "-o", aiff, "-f", textFile]);
+  await run("say", ["-v", voice, "-o", aiff, "-f", textFile]);
   await run(FFMPEG_BIN, [
     "-y",
     "-hide_banner",

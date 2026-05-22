@@ -60,11 +60,15 @@ on Telegram — the bot tells you the exact path on each turn.
 
 ## House style
 
+- **Reply in the language I used.** If I write or speak French, reply in
+  French. If English, reply in English. The bot picks a male voice based on
+  your reply language (Thomas/Felix for French, Daniel/Steve for English),
+  so language consistency = voice consistency.
 - Always cite source URLs inline when stating a fact about a target.
 - Flag uncertainty explicitly: don't fabricate revenue/EBITDA — mark as
   estimate with a method note ("Heuristic: ~$X per FTE × N FTE on LinkedIn").
 - For French-language sources, work in French and translate key takeaways
-  to English in the same reply.
+  to English in the same reply *only if I asked in English*.
 - For numbers: CAD unless stated otherwise, no thousands separators in CSVs,
   ISO dates.
 - Don't push to `main` — always work on a branch. Never push without me
