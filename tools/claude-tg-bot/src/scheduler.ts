@@ -10,6 +10,7 @@ import { log } from "./logger.js";
 import { runClaude } from "./claude.js";
 import { getOrCreateSession } from "./sessions.js";
 import { chunkForTelegram } from "./telegram.js";
+import { recordTurn } from "./usage.js";
 
 const tasks = new Map<number, cron.ScheduledTask>();
 
@@ -32,11 +33,17 @@ function scheduleOne(bot: Telegraf, job: JobRow): void {
     if (job.cwd) session.cwd = job.cwd;
     const turnStart = Date.now();
     let buf = "";
+    let doneCost: number | undefined;
+    let doneTurns = 1;
     try {
       const prefix = buildContextPrefix(job.chat_id);
       for await (const ev of runClaude(session, job.prompt, prefix)) {
         if (ev.kind === "text") buf += ev.text;
         else if (ev.kind === "error") buf += `\n\n[error] ${ev.message}`;
+        else if (ev.kind === "done") {
+          doneCost = ev.costUsd;
+          doneTurns = ev.numTurns ?? 1;
+        }
       }
       const header = `⏰ Job #${job.id} — \`${job.cron_expr}\`\n\n`;
       const body = (buf.trim() || "(no output)").trim();
@@ -45,6 +52,7 @@ function scheduleOne(bot: Telegraf, job: JobRow): void {
       }
       const newFiles = collectOutboxFilesSince(job.chat_id, turnStart);
       if (newFiles.length) await deliverOutboxFiles(bot, job.chat_id, newFiles);
+      await recordTurn(job.chat_id, doneTurns, doneCost);
     } catch (err) {
       log.error({ err, jobId: job.id }, "scheduler.job_failed");
       await bot.telegram

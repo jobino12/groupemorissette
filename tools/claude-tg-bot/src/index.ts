@@ -14,6 +14,7 @@ import { log } from "./logger.js";
 import { bootScheduler } from "./scheduler.js";
 import { getOrCreateSession } from "./sessions.js";
 import { chunkForTelegram } from "./telegram.js";
+import { initUsage, recordTurn } from "./usage.js";
 import { splitForTts, synthesizeSpeech, transcribeVoice } from "./voice.js";
 
 const bot = new Telegraf(config.telegramToken);
@@ -95,6 +96,7 @@ async function runTurn(
             "claude.done",
           );
         }
+        await recordTurn(ctx.chat.id, ev.numTurns ?? 1, ev.costUsd);
       }
     }
   } catch (err) {
@@ -172,6 +174,7 @@ bot.catch((err) => {
 });
 
 async function main() {
+  initUsage(bot);
   bootScheduler(bot);
   await bot.launch({ dropPendingUpdates: true });
   log.info("bot.started");

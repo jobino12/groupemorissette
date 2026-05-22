@@ -34,6 +34,24 @@ if (!cols.some((c) => c.name === "voice_mode")) {
   db.exec("ALTER TABLE sessions ADD COLUMN voice_mode TEXT NOT NULL DEFAULT 'auto'");
 }
 
+db.exec(`
+  CREATE TABLE IF NOT EXISTS turns (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    chat_id INTEGER NOT NULL,
+    num_turns INTEGER NOT NULL DEFAULT 1,
+    cost_usd REAL,
+    ts INTEGER NOT NULL DEFAULT (strftime('%s','now'))
+  );
+  CREATE INDEX IF NOT EXISTS idx_turns_ts ON turns(ts);
+
+  CREATE TABLE IF NOT EXISTS notification_state (
+    window_kind TEXT PRIMARY KEY,
+    last_bucket INTEGER NOT NULL DEFAULT 0
+  );
+  INSERT OR IGNORE INTO notification_state (window_kind, last_bucket) VALUES ('5h', 0);
+  INSERT OR IGNORE INTO notification_state (window_kind, last_bucket) VALUES ('weekly', 0);
+`);
+
 export type JobRow = {
   id: number;
   chat_id: number;

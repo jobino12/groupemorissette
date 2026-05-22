@@ -9,6 +9,7 @@ import {
   setCwd,
   setVoiceMode,
 } from "./sessions.js";
+import { formatUsage, getUsage } from "./usage.js";
 import type { VoiceMode } from "./db.js";
 
 const HELP = `Hi! I'm your Claude home-Mac bot.
@@ -21,6 +22,7 @@ Commands:
 /pwd — show the working directory Claude is using
 /cd <path> — change Claude's working directory (e.g. /cd ~/code/groupemorissette)
 /voice <auto|on|off> — reply mode. auto = match input (voice→voice, text→text)
+/usage — show current Claude usage (5-hour + weekly windows)
 /schedule <cron> | <prompt> — schedule a recurring prompt
   e.g. /schedule 0 9 * * 1-5 | summarize overnight CI activity
 /jobs — list scheduled jobs in this chat
@@ -56,6 +58,11 @@ export function registerCommands(bot: Telegraf): void {
   bot.command("reset", async (ctx) => {
     resetSession(ctx.chat.id);
     await ctx.reply("Session cleared. Next message starts fresh.");
+  });
+
+  bot.command("usage", async (ctx) => {
+    const u = getUsage();
+    await ctx.reply("```\n" + formatUsage(u) + "\n```", { parse_mode: "Markdown" });
   });
 
   bot.command("voice", async (ctx) => {
