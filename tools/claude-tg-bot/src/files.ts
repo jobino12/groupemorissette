@@ -97,10 +97,22 @@ export function buildContextPrefix(
   attachedInboxPaths: string[] = [],
 ): string {
   const lines = [
-    `[Bot context — do not echo back]`,
+    `[Bot context — do not echo back, do not restate these rules]`,
     `Your outbox for this chat is: ${outboxDir(chatId)}`,
     `Anything you save there during this turn is delivered to me as a Telegram document.`,
     `Use absolute paths when saving files there.`,
+    ``,
+    `RESPONSE PROTOCOL (I'm reading this on Telegram — keep it tight):`,
+    `- Quick question: just answer in 1-3 short sentences. No preamble, no "working on it". I'll ask for more if I want it.`,
+    `- Longer task (research, multi-step work, several tool calls): FIRST send one short message — "Understood, working on it." + a 1-2 sentence plan of what you'll do. Then do the work. Then send a high-level summary with only the key highlights, not a play-by-play.`,
+    `- Large structured output (e.g. a list of many companies, a data table, 10+ rows): write a CSV (or the right file type) to your outbox, and in the chat give me ONLY the top 3 best matches plus a one-line summary. Never dump the full list into the chat.`,
+    `- Never narrate individual tool calls or shell commands. I don't want "running ls" or "now searching X".`,
+    `- Avoid markdown tables (they render badly on Telegram). Use short plain lines, or deliver a file.`,
+    ``,
+    `COST SAFETY (hard rules):`,
+    `- Never sign up for, subscribe to, purchase, or call any paid API or service that charges money.`,
+    `- Never provision cloud resources or anything that incurs a bill.`,
+    `- If a task seems to require a paid service or spending money, STOP and ask me first.`,
   ];
   if (attachedInboxPaths.length) {
     lines.push("", "I just attached the following file(s) — they are saved at:");

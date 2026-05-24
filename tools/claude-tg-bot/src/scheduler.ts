@@ -11,7 +11,7 @@ import { log } from "./logger.js";
 import { runClaude } from "./claude.js";
 import { getOrCreateSession } from "./sessions.js";
 import { chunkForTelegram } from "./telegram.js";
-import { recordTurn } from "./usage.js";
+import { checkHardLimit, recordTurn } from "./usage.js";
 
 const tasks = new Map<number, cron.ScheduledTask>();
 
@@ -30,6 +30,14 @@ function scheduleOne(bot: Telegraf, job: JobRow): void {
   }
   const task = cron.schedule(job.cron_expr, async () => {
     log.info({ jobId: job.id, chatId: job.chat_id }, "scheduler.fire");
+    const limit = checkHardLimit();
+    if (limit.blocked) {
+      log.warn({ jobId: job.id, reason: limit.reason }, "scheduler.skipped_usage_guardrail");
+      await bot.telegram
+        .sendMessage(job.chat_id, `⏰ Job #${job.id} skipped — usage guardrail: ${limit.reason}`)
+        .catch(() => {});
+      return;
+    }
     const session = getOrCreateSession(job.chat_id);
     if (job.cwd) session.cwd = job.cwd;
     const turnStart = Date.now();

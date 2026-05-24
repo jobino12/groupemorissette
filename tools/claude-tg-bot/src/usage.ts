@@ -8,6 +8,7 @@ import { synthesizeSpeech } from "./voice.js";
 
 const MAX_5H = Number(process.env.MAX_5H_TURNS ?? 225);
 const MAX_WEEKLY = Number(process.env.MAX_WEEKLY_TURNS ?? 2000);
+const HARD_STOP_PCT = Number(process.env.HARD_STOP_PCT ?? 90);
 const NOTIF_CHAT_ID = process.env.NOTIFICATIONS_CHAT_ID
   ? Number(process.env.NOTIFICATIONS_CHAT_ID)
   : config.allowedUserIds[0];
@@ -57,6 +58,23 @@ export function getUsage(): UsageSnapshot {
 
 function bucketOf(pct: number): number {
   return Math.floor(pct / 10) * 10;
+}
+
+export function checkHardLimit(): { blocked: boolean; reason: string } {
+  const u = getUsage();
+  if (u.fiveH.pct >= HARD_STOP_PCT) {
+    return {
+      blocked: true,
+      reason: `5-hour usage at ${u.fiveH.pct.toFixed(0)}% (guardrail at ${HARD_STOP_PCT}%). Resets within 5h.`,
+    };
+  }
+  if (u.weekly.pct >= HARD_STOP_PCT) {
+    return {
+      blocked: true,
+      reason: `weekly usage at ${u.weekly.pct.toFixed(0)}% (guardrail at ${HARD_STOP_PCT}%). Resets at week boundary.`,
+    };
+  }
+  return { blocked: false, reason: "" };
 }
 
 async function notify(text: string): Promise<void> {

@@ -14,7 +14,7 @@ import { log } from "./logger.js";
 import { bootScheduler } from "./scheduler.js";
 import { getOrCreateSession } from "./sessions.js";
 import { chunkForTelegram } from "./telegram.js";
-import { initUsage, recordTurn } from "./usage.js";
+import { checkHardLimit, initUsage, recordTurn } from "./usage.js";
 import { detectLang, splitForTts, synthesizeSpeech, transcribeVoice } from "./voice.js";
 
 const bot = new Telegraf(config.telegramToken);
@@ -46,6 +46,13 @@ async function runTurn(
   opts: { attachedPaths?: string[]; replyAsVoice?: boolean } = {},
 ): Promise<void> {
   if (!ctx.chat) return;
+  const limit = checkHardLimit();
+  if (limit.blocked) {
+    await ctx
+      .reply(`🛑 Usage guardrail: ${limit.reason}\nPausing new requests to protect your Max quota. Send /usage to check.`)
+      .catch(() => {});
+    return;
+  }
   const session = getOrCreateSession(ctx.chat.id);
   const replyAsVoice =
     opts.replyAsVoice ?? (session.voiceMode === "voice");
@@ -57,16 +64,6 @@ async function runTurn(
   const turnStart = Date.now();
 
   let buf = "";
-  const flushText = async (force = false) => {
-    if (!buf) return;
-    if (!force && buf.length < 3500) return;
-    const out = buf;
-    buf = "";
-    for (const chunk of chunkForTelegram(out)) {
-      await ctx.reply(chunk).catch((err) => log.error({ err }, "telegram.send_failed"));
-    }
-  };
-
   try {
     const basePrefix = buildContextPrefix(ctx.chat.id, session.cwd, opts.attachedPaths ?? []);
     const voiceConcise = replyAsVoice
@@ -78,15 +75,16 @@ async function runTurn(
       model: config.chatModel,
     })) {
       if (ev.kind === "text") {
-        buf += ev.text;
-        if (!replyAsVoice) await flushText(false);
-      } else if (ev.kind === "tool") {
-        if (!replyAsVoice) {
-          await flushText(true);
-          await ctx.reply(`→ ${ev.name} ${ev.brief}`).catch(() => {});
+        if (replyAsVoice) {
+          buf += ev.text;
+        } else {
+          for (const chunk of chunkForTelegram(ev.text)) {
+            await ctx.reply(chunk).catch((err) => log.error({ err }, "telegram.send_failed"));
+          }
         }
+      } else if (ev.kind === "tool") {
+        // Tool calls are intentionally not narrated to the chat.
       } else if (ev.kind === "error") {
-        if (!replyAsVoice) await flushText(true);
         await ctx.reply(`⚠️ ${ev.message}`).catch(() => {});
       } else if (ev.kind === "session") {
         log.info({ chatId: ctx.chat.id, sessionId: ev.sessionId }, "session.new");
@@ -95,8 +93,6 @@ async function runTurn(
           const finalText = buf.trim();
           buf = "";
           if (finalText) await replyWithVoice(ctx, finalText);
-        } else {
-          await flushText(true);
         }
         if (ev.costUsd != null) {
           log.info(
@@ -123,6 +119,10 @@ bot.command("opus", async (ctx) => {
   const prompt = space === -1 ? "" : text.slice(space + 1).trim();
   if (!prompt) {
     return ctx.reply("Usage: /opus <prompt>\nRuns the prompt against the heavy model (Opus) in an isolated session — won't touch your current chat session. Result arrives when ready.");
+  }
+  const limit = checkHardLimit();
+  if (limit.blocked) {
+    return ctx.reply(`🛑 Usage guardrail: ${limit.reason}\nPausing new requests to protect your Max quota.`);
   }
   await ctx.reply(`🧠 On it with Opus. I'll keep chatting normally; the result will arrive here when done.`);
   void runOpusBackground(ctx, prompt);
