@@ -1,0 +1,1759 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Groupe Morissette — Playbook Opérationnel v2</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Reset & Base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0a0a0b;
+      --bg-card:   #111114;
+      --bg-card2:  #16161a;
+      --border:    #222228;
+      --accent:    #e8a020;
+      --accent-dim:#b87d18;
+      --text:      #f0f0f0;
+      --muted:     #888899;
+      --muted2:    #555566;
+      --green:     #2ecc71;
+      --blue:      #4a9eff;
+      --red:       #e74c3c;
+      --orange:    #e8a020;
+      --radius:    12px;
+      --radius-sm: 6px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Layout ── */
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    section {
+      padding: 100px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    section:last-of-type { border-bottom: none; }
+
+    /* ── Section Labels ── */
+    .section-num {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .section-title {
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 16px;
+      color: var(--text);
+    }
+
+    .section-sub {
+      font-size: 18px;
+      color: var(--muted);
+      max-width: 640px;
+      line-height: 1.7;
+    }
+
+    /* ── Header Bar ── */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10, 10, 11, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 0;
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .logo {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .logo span { color: var(--accent); }
+
+    .header-nav {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .nav-link {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      transition: color 0.2s;
+    }
+
+    .nav-link:hover { color: var(--text); }
+
+    .confidential-badge {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted2);
+      border: 1px solid var(--border);
+      padding: 4px 10px;
+      border-radius: 100px;
+    }
+
+    /* ── Hero ── */
+    #hero {
+      padding: 120px 0 100px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .hero-eyebrow {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      border: 1px solid var(--accent-dim);
+      padding: 5px 14px;
+      border-radius: 100px;
+      margin-bottom: 32px;
+    }
+
+    .hero-title {
+      font-size: clamp(36px, 6vw, 64px);
+      font-weight: 900;
+      line-height: 1.08;
+      letter-spacing: -0.02em;
+      margin-bottom: 20px;
+    }
+
+    .hero-title .line-accent {
+      color: var(--accent);
+      display: block;
+    }
+
+    .hero-thesis {
+      font-size: clamp(18px, 2.5vw, 22px);
+      color: var(--muted);
+      font-weight: 400;
+      max-width: 640px;
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    .hero-bilingual {
+      font-size: 14px;
+      color: var(--muted2);
+      font-style: italic;
+      margin-bottom: 56px;
+      letter-spacing: 0.02em;
+    }
+
+    .metrics-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .metric-chip {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .metric-chip .val {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1;
+    }
+
+    .metric-chip .lbl {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    /* ── Big Statement ── */
+    .big-statement {
+      font-size: clamp(22px, 3.5vw, 36px);
+      font-weight: 800;
+      line-height: 1.25;
+      color: var(--text);
+      max-width: 760px;
+      margin-bottom: 20px;
+    }
+
+    .big-statement em {
+      color: var(--accent);
+      font-style: normal;
+    }
+
+    /* ── Highlight Box ── */
+    .highlight-box {
+      background: linear-gradient(135deg, rgba(232,160,32,0.08) 0%, rgba(232,160,32,0.03) 100%);
+      border: 1px solid rgba(232,160,32,0.25);
+      border-radius: var(--radius);
+      padding: 28px 32px;
+      margin-top: 40px;
+    }
+
+    .highlight-box p {
+      font-size: 16px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .highlight-box strong { color: var(--text); }
+
+    /* ── Framework List ── */
+    .framework-list {
+      margin-top: 48px;
+      display: grid;
+      gap: 2px;
+    }
+
+    .framework-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+      padding: 22px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .framework-item:last-child { border-bottom: none; }
+
+    .framework-num {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+      min-width: 28px;
+      padding-top: 3px;
+      flex-shrink: 0;
+    }
+
+    .framework-content h3 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 4px;
+      color: var(--text);
+    }
+
+    .framework-content .book-ref {
+      font-size: 13px;
+      color: var(--accent);
+      font-weight: 600;
+      margin-bottom: 4px;
+      font-style: italic;
+    }
+
+    .framework-content p {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .framework-tag {
+      background: rgba(232,160,32,0.1);
+      border: 1px solid rgba(232,160,32,0.2);
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 100px;
+      white-space: nowrap;
+      align-self: flex-start;
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    /* ── Phase Block ── */
+    .phase-block {
+      margin-top: 56px;
+    }
+
+    .phase-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 32px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .phase-badge {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-card2);
+      border: 1px solid var(--accent-dim);
+      border-radius: var(--radius-sm);
+      padding: 10px 16px;
+      min-width: 88px;
+    }
+
+    .phase-badge .phase-num {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .phase-badge .phase-label {
+      font-size: 20px;
+      font-weight: 900;
+      color: var(--text);
+      line-height: 1;
+    }
+
+    .phase-header-text h2 {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .phase-header-text .phase-time {
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    /* ── Week Grid ── */
+    .week-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .week-item {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 0;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .week-label {
+      background: var(--bg-card2);
+      border-right: 1px solid var(--border);
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .week-label .wnum {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+
+    .week-label .wtime {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .week-content {
+      padding: 20px 24px;
+    }
+
+    .week-content h3 {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+
+    .week-content ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .week-content ul li {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.55;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .week-content ul li::before {
+      content: '—';
+      color: var(--accent);
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* ── Warning Box ── */
+    .warning-box {
+      background: rgba(231, 76, 60, 0.06);
+      border: 1px solid rgba(231, 76, 60, 0.3);
+      border-left: 3px solid var(--red);
+      border-radius: var(--radius);
+      padding: 24px 28px;
+      margin-top: 24px;
+    }
+
+    .warning-box .warning-title {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 14px;
+    }
+
+    .warning-box ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .warning-box ul li {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.55;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .warning-box ul li::before {
+      content: '✕';
+      color: var(--red);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    /* ── Lever Cards ── */
+    .lever-grid {
+      display: grid;
+      gap: 12px;
+      margin-top: 40px;
+    }
+
+    .lever-item {
+      display: grid;
+      grid-template-columns: 52px 1fr auto;
+      align-items: start;
+      gap: 20px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px 24px;
+      transition: border-color 0.2s;
+    }
+
+    .lever-item:hover { border-color: var(--muted2); }
+
+    .lever-num {
+      width: 44px;
+      height: 44px;
+      background: rgba(232,160,32,0.1);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: 900;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+
+    .lever-text h3 {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+
+    .lever-text p {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .lever-impact {
+      background: rgba(46,204,113,0.1);
+      border: 1px solid rgba(46,204,113,0.2);
+      color: var(--green);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: 100px;
+      white-space: nowrap;
+      align-self: flex-start;
+    }
+
+    /* ── Value Bridge Table ── */
+    .value-bridge {
+      margin-top: 48px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .bridge-header {
+      background: var(--bg-card2);
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .bridge-header h3 {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .bridge-row {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      align-items: center;
+      gap: 24px;
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.15s;
+    }
+
+    .bridge-row:last-child { border-bottom: none; }
+    .bridge-row:hover { background: var(--bg-card2); }
+
+    .bridge-row .br-label {
+      font-size: 14px;
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .bridge-row .br-amount {
+      font-size: 15px;
+      font-weight: 700;
+      text-align: right;
+      min-width: 80px;
+    }
+
+    .bridge-row .br-pct {
+      font-size: 12px;
+      color: var(--muted);
+      text-align: right;
+      min-width: 60px;
+    }
+
+    .bridge-row.br-entry .br-label { color: var(--muted); }
+    .bridge-row.br-entry .br-amount { color: var(--muted); }
+
+    .bridge-row.br-lever .br-label { padding-left: 16px; color: var(--muted); font-size: 13px; }
+    .bridge-row.br-lever .br-amount { color: var(--green); font-size: 13px; }
+
+    .bridge-row.br-exit .br-label { font-weight: 800; font-size: 15px; }
+    .bridge-row.br-exit .br-amount { color: var(--accent); font-size: 18px; }
+    .bridge-row.br-exit { background: rgba(232,160,32,0.04); }
+
+    .bridge-row.br-val .br-label { font-size: 13px; color: var(--muted); padding-left: 16px; }
+    .bridge-row.br-val .br-amount { color: var(--blue); font-size: 13px; }
+
+    .bridge-divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 0;
+    }
+
+    /* ── KPI Table ── */
+    .kpi-table-wrap {
+      margin-top: 48px;
+      overflow-x: auto;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    thead tr {
+      background: var(--bg-card2);
+    }
+
+    thead th {
+      padding: 14px 16px;
+      text-align: left;
+      font-weight: 700;
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--border);
+    }
+
+    thead th:not(:first-child) { text-align: center; }
+
+    tbody tr {
+      border-bottom: 1px solid var(--border);
+      transition: background 0.15s;
+    }
+
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: var(--bg-card2); }
+
+    tbody td {
+      padding: 14px 16px;
+      color: var(--muted);
+    }
+
+    tbody td:first-child {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    tbody td:not(:first-child) { text-align: center; }
+
+    .kpi-target {
+      color: var(--green);
+      font-weight: 700;
+    }
+
+    .kpi-freq {
+      background: var(--bg-card2);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 3px 10px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .kpi-num {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent);
+      min-width: 24px;
+      display: inline-block;
+    }
+
+    /* ── Tech Ladder ── */
+    .ladder-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      margin-top: 48px;
+    }
+
+    .ladder-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .ladder-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--accent);
+      opacity: 0.5;
+    }
+
+    .ladder-card.active::before { opacity: 1; }
+
+    .ladder-badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      border: 1px solid var(--accent-dim);
+      padding: 3px 10px;
+      border-radius: 100px;
+      margin-bottom: 16px;
+    }
+
+    .ladder-card h3 {
+      font-size: 16px;
+      font-weight: 800;
+      margin-bottom: 16px;
+      color: var(--text);
+    }
+
+    .ladder-card ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .ladder-card ul li {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.55;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .ladder-card ul li::before {
+      content: '→';
+      color: var(--accent);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    /* ── Due Diligence ── */
+    .dd-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 48px;
+    }
+
+    .dd-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+    }
+
+    .dd-card .dd-icon {
+      font-size: 22px;
+      margin-bottom: 14px;
+      display: block;
+    }
+
+    .dd-card h3 {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: var(--text);
+    }
+
+    .dd-card ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .dd-card ul li {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.55;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .dd-card ul li::before {
+      content: '·';
+      color: var(--accent);
+      font-weight: 900;
+      flex-shrink: 0;
+      font-size: 16px;
+      line-height: 1.3;
+    }
+
+    /* ── Value Lever Table ── */
+    .lever-table-wrap {
+      margin-top: 32px;
+      overflow-x: auto;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+    }
+
+    /* ── Moat / Proof Cards ── */
+    .moat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 48px;
+    }
+
+    .moat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .moat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--accent);
+      opacity: 0.6;
+    }
+
+    .moat-num {
+      font-size: 48px;
+      font-weight: 900;
+      color: var(--border);
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .moat-title {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: var(--accent);
+    }
+
+    .moat-body {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    /* ── Tag Pills ── */
+    .tag {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 100px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      margin-right: 6px;
+      margin-bottom: 6px;
+    }
+
+    .tag-accent { border-color: var(--accent-dim); color: var(--accent); }
+    .tag-green  { border-color: rgba(46,204,113,0.3); color: var(--green); }
+
+    /* ── Divider ── */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 40px 0;
+    }
+
+    /* ── Footer ── */
+    footer {
+      padding: 48px 0;
+      text-align: center;
+    }
+
+    .footer-logo {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--muted2);
+      margin-bottom: 16px;
+    }
+
+    .footer-logo span { color: var(--muted); }
+
+    .confidentiality {
+      font-size: 12px;
+      color: var(--muted2);
+      max-width: 620px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    /* ── Inline Tag ── */
+    .inline-tag {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: rgba(232,160,32,0.1);
+      border: 1px solid rgba(232,160,32,0.2);
+      padding: 2px 8px;
+      border-radius: 100px;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 720px) {
+      section { padding: 72px 0; }
+
+      .dd-grid     { grid-template-columns: 1fr; }
+      .moat-grid   { grid-template-columns: 1fr; }
+      .ladder-grid { grid-template-columns: 1fr; }
+
+      .week-item {
+        grid-template-columns: 1fr;
+      }
+
+      .week-label {
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        padding: 12px 16px;
+      }
+
+      .lever-item {
+        grid-template-columns: 44px 1fr;
+      }
+
+      .lever-impact { display: none; }
+
+      .bridge-row {
+        grid-template-columns: 1fr auto;
+      }
+
+      .bridge-row .br-pct { display: none; }
+
+      .metrics-row { gap: 8px; }
+      .metric-chip { flex: 1 1 calc(50% - 4px); }
+
+      .header-nav .nav-link { display: none; }
+    }
+
+    @media (max-width: 480px) {
+      .hero-title { font-size: 32px; }
+      .metric-chip { flex: 1 1 100%; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Header ── -->
+<header>
+  <div class="header-inner">
+    <a href="investor-v2.html" class="logo">Groupe <span>Morissette</span></a>
+    <div class="header-nav">
+      <a href="investor-v2.html" class="nav-link">← Mémo Investisseur</a>
+      <div class="confidential-badge">Confidentiel · Opérations</div>
+    </div>
+  </div>
+</header>
+
+<!-- ── 00. Hero ── -->
+<section id="hero">
+  <div class="container">
+    <span class="hero-eyebrow">Playbook Opérationnel v2 · 2025</span>
+    <h1 class="hero-title">
+      Groupe Morissette
+      <span class="line-accent">Acquérir. Systématiser. Croître.</span>
+    </h1>
+    <p class="hero-thesis">
+      La méthodologie de l'opérateur natif IA — chaque phase montre comment la valeur est créée, pas seulement qu'elle le sera.
+    </p>
+    <p class="hero-bilingual">Acquire. Systematize. Scale. — The AI-native operator's methodology.</p>
+
+    <div class="metrics-row">
+      <div class="metric-chip">
+        <span class="val">+56 %</span>
+        <span class="lbl">BAIIA cible post-sprint</span>
+      </div>
+      <div class="metric-chip">
+        <span class="val">100 jours</span>
+        <span class="lbl">Fenêtre critique de valeur</span>
+      </div>
+      <div class="metric-chip">
+        <span class="val">6 leviers</span>
+        <span class="lbl">D'amélioration opérationnelle</span>
+      </div>
+      <div class="metric-chip">
+        <span class="val">10 KPIs</span>
+        <span class="lbl">Tableau de bord hebdo</span>
+      </div>
+      <div class="metric-chip">
+        <span class="val">8 cadres</span>
+        <span class="lbl">Fondation intellectuelle</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── 01. Fondation intellectuelle ── -->
+<section id="fondation">
+  <div class="container">
+    <span class="section-num">01 — Fondation</span>
+    <h2 class="section-title">La base intellectuelle</h2>
+    <p class="section-sub">
+      Nous n'inventons pas — nous appliquons rigoureusement les meilleures pratiques mondiales de gestion de PME, de lean manufacturing et d'allocation de capital. Chaque cadre a une date de déploiement précise.
+    </p>
+
+    <div class="framework-list">
+
+      <div class="framework-item">
+        <div class="framework-num">01</div>
+        <div class="framework-content" style="flex: 1;">
+          <h3>Traction — Entrepreneurial Operating System (EOS)</h3>
+          <div class="book-ref">Gino Wickman · Traction</div>
+          <p>Vision, traction, santé organisationnelle. Réunion hebdomadaire 90 minutes, tableau de bord 10 chiffres, priorités trimestrielles. Structure de gouvernance fondamentale pour toute PME acquise.</p>
+        </div>
+        <div class="framework-tag">Jours 1–30</div>
+      </div>
+
+      <div class="framework-item">
+        <div class="framework-num">02</div>
+        <div class="framework-content" style="flex: 1;">
+          <h3>Toyota Way / 2 Second Lean</h3>
+          <div class="book-ref">Paul Akers · 2 Second Lean</div>
+          <p>Éliminer 20–40 % du gaspillage dans les 90 premiers jours. Événement 5S, gestion visuelle, habitudes lean quotidiennes. Le plancher d'atelier comme laboratoire d'amélioration continue.</p>
+        </div>
+        <div class="framework-tag">Jours 1–90</div>
+      </div>
+
+      <div class="framework-item">
+        <div class="framework-num">03</div>
+        <div class="framework-content" style="flex: 1;">
+          <h3>Theory of Constraints (TOC)</h3>
+          <div class="book-ref">Eliyahu Goldratt · The Goal</div>
+          <p>Identifier le goulot d'étranglement principal dès la semaine 1. Toute l'énergie opérationnelle se concentre sur l'élévation d'une seule contrainte avant de passer à la suivante.</p>
+        </div>
+        <div class="framework-tag">Semaine 1</div>
+      </div>
+
+      <div class="framework-item">
+        <div class="framework-num">04</div>
+        <div class="framework-content" style="flex: 1;">
+          <h3>Profit First</h3>
+          <div class="book-ref">Mike Michalowicz · Profit First</div>
+          <p>Architecture délibérée des flux de trésorerie dès le mois 1. Comptes bancaires séparés, allocations automatiques, plancher de marge sur chaque devis. Le profit n'est pas un résidu — c'est une décision.</p>
+        </div>
+        <div class="framework-tag">Mois 1</div>
+      </div>
+
+      <div class="framework-item">
+        <div class="framework-num">05</div>
+        <div class="framework-content" style="flex: 1;">
+          <h3>Simple Numbers</h3>
+          <div class="book-ref">Greg Crabtree · Simple Numbers</div>
+          <p>Labor Efficiency Ratio (LER) cible de 2.0x minimum. Chaque dollar de masse salariale doit générer 2 dollars de marge brute. Indicateur hebdomadaire non négociable.</p>
+        </div>
+        <div class="framework-tag">Mensuel</div>
+      </div>
+
+      <div class="framework-item">
+        <div class="framework-num">06</div>
+        <div class="framework-content" style="flex: 1;">
+          <h3>The Pumpkin Plan</h3>
+          <div class="book-ref">Mike Michalowicz · The Pumpkin Plan</div>
+          <p>Segmentation clients A/B/C dès le mois 2. Poursuivre activement les clients A (marges élevées, loyaux, faciles). Sortir activement des clients C (destructeurs de valeur, chronophages, petits volumes).</p>
+        </div>
+        <div class="framework-tag">Mois 2–3</div>
+      </div>
+
+      <div class="framework-item">
+        <div class="framework-num">07</div>
+        <div class="framework-content" style="flex: 1;">
+          <h3>Competing in the Age of AI</h3>
+          <div class="book-ref">Iansiti &amp; Lakhani · Harvard Business Review Press</div>
+          <p>Avantage structurel pour les premiers entrants. L'IA comme fondation opérationnelle — pas comme outil ponctuel. Chaque processus digitalisé aujourd'hui est une barrière compétitive demain.</p>
+        </div>
+        <div class="framework-tag">Continu</div>
+      </div>
+
+      <div class="framework-item">
+        <div class="framework-num">08</div>
+        <div class="framework-content" style="flex: 1;">
+          <h3>Buy Then Build</h3>
+          <div class="book-ref">Walker Deibel · Buy Then Build</div>
+          <p>Les 100 premiers jours déterminent la création ou la destruction de valeur. Écouter avant d'agir. Prouver la compétence avant d'imposer le changement. La confiance se gagne sur le plancher, pas dans la salle de conférence.</p>
+        </div>
+        <div class="framework-tag">Jours 1–100</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── 02. Phase 0 — Due Diligence ── -->
+<section id="phase0">
+  <div class="container">
+    <span class="section-num">02 — Acquisition</span>
+
+    <div class="phase-header">
+      <div class="phase-badge">
+        <span class="phase-num">Phase</span>
+        <span class="phase-label">0</span>
+      </div>
+      <div class="phase-header-text">
+        <h2>Due Diligence — Ce qu'on cherche vraiment</h2>
+        <span class="phase-time">Avant signature · 4–8 semaines</span>
+      </div>
+    </div>
+
+    <p class="section-sub" style="margin-bottom: 40px;">
+      La diligence n'est pas une liste de cases à cocher. C'est la cartographie complète du risque et du potentiel de valeur — chaque dollar de surprix payé ici n'est jamais récupéré.
+    </p>
+
+    <div class="dd-grid">
+
+      <div class="dd-card">
+        <span class="dd-icon">$</span>
+        <h3>Qualité des bénéfices</h3>
+        <ul>
+          <li>Normaliser la rémunération du propriétaire (salaire marché vs extraction)</li>
+          <li>Test de stress des revenus — retirer les 3 plus gros clients</li>
+          <li>Vieillissement des comptes clients (AR aging) — DSO actuel vs tendance</li>
+          <li>Identifier les revenus récurrents vs ponctuels</li>
+          <li>Retraiter les dépenses personnelles passées en entreprise</li>
+        </ul>
+      </div>
+
+      <div class="dd-card">
+        <span class="dd-icon">&#9651;</span>
+        <h3>Personnes &amp; Risque organisationnel</h3>
+        <ul>
+          <li>Cartographier l'organigramme réel (pas le formel)</li>
+          <li>Mesurer la dépendance au propriétaire — que se passe-t-il si absent 30 jours?</li>
+          <li>Entretiens individuels avec les 3 employés clés</li>
+          <li>Culture d'équipe — rétention, absentéisme, ancienneté</li>
+          <li>Identifier les "porteurs de savoir" non documenté</li>
+        </ul>
+      </div>
+
+      <div class="dd-card">
+        <span class="dd-icon">&#9651;</span>
+        <h3>Opérations &amp; Actifs</h3>
+        <ul>
+          <li>Observation sur site — minimum 2 jours complets sur le plancher</li>
+          <li>WIP en cours et carnet de commandes vérifiable</li>
+          <li>État du système de planification/dispatch actuel</li>
+          <li>Inventaire physique des équipements et véhicules</li>
+          <li>Identification des inefficacités visibles (gaspillage lean)</li>
+        </ul>
+      </div>
+
+      <div class="dd-card">
+        <span class="dd-icon">&#9651;</span>
+        <h3>Légal, Permis &amp; Commercial</h3>
+        <ul>
+          <li>Tous contrats clients — clauses de changement de contrôle</li>
+          <li>Permis, licences RBQ, certifications — transférabilité</li>
+          <li>Bail commercial — durée, options de renouvellement</li>
+          <li>Contrats fournisseurs et conditions de crédit</li>
+          <li>Litiges en cours ou passés (3 dernières années)</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <hr class="divider" />
+
+    <h3 style="font-size: 17px; font-weight: 700; margin-bottom: 8px; color: var(--text);">Table des leviers de valeur identifiés en diligence</h3>
+    <p style="font-size: 14px; color: var(--muted); margin-bottom: 0;">Chaque levier représente une opportunité d'amélioration BAIIA mesurable avant même la signature.</p>
+
+    <div class="lever-table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Levier</th>
+            <th style="text-align:center;">Impact BAIIA (bas)</th>
+            <th style="text-align:center;">Impact BAIIA (haut)</th>
+            <th style="text-align:center;">Délai de réalisation</th>
+            <th style="text-align:center;">Complexité</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Ingénierie des prix</td>
+            <td style="text-align:center; color: var(--green); font-weight: 700;">+3 %</td>
+            <td style="text-align:center; color: var(--green); font-weight: 700;">+6 %</td>
+            <td style="text-align:center;"><span class="kpi-freq">Mois 2–4</span></td>
+            <td style="text-align:center; color: var(--muted);">Faible</td>
+          </tr>
+          <tr>
+            <td>Productivité main-d'œuvre</td>
+            <td style="text-align:center; color: var(--green); font-weight: 700;">+2 %</td>
+            <td style="text-align:center; color: var(--green); font-weight: 700;">+5 %</td>
+            <td style="text-align:center;"><span class="kpi-freq">Mois 2–6</span></td>
+            <td style="text-align:center; color: var(--muted);">Moyenne</td>
+          </tr>
+          <tr>
+            <td>Optimisation des achats</td>
+            <td style="text-align:center; color: var(--green); font-weight: 700;">+1 %</td>
+            <td style="text-align:center; color: var(--green); font-weight: 700;">+3 %</td>
+            <td style="text-align:center;"><span class="kpi-freq">Mois 3–5</span></td>
+            <td style="text-align:center; color: var(--muted);">Faible</td>
+          </tr>
+          <tr>
+            <td>Segmentation clients A/B/C</td>
+            <td style="text-align:center; color: var(--green); font-weight: 700;">+1 %</td>
+            <td style="text-align:center; color: var(--green); font-weight: 700;">+2 %</td>
+            <td style="text-align:center;"><span class="kpi-freq">Mois 2–4</span></td>
+            <td style="text-align:center; color: var(--muted);">Faible</td>
+          </tr>
+          <tr>
+            <td>Lean shop / réduction gaspillage</td>
+            <td style="text-align:center; color: var(--green); font-weight: 700;">+1 %</td>
+            <td style="text-align:center; color: var(--green); font-weight: 700;">+3 %</td>
+            <td style="text-align:center;"><span class="kpi-freq">Jours 30–90</span></td>
+            <td style="text-align:center; color: var(--muted);">Moyenne</td>
+          </tr>
+          <tr>
+            <td>Contrôles financiers (DSO, marges)</td>
+            <td style="text-align:center; color: var(--green); font-weight: 700;">+1 %</td>
+            <td style="text-align:center; color: var(--green); font-weight: 700;">+2 %</td>
+            <td style="text-align:center;"><span class="kpi-freq">Mois 1–3</span></td>
+            <td style="text-align:center; color: var(--muted);">Faible</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── 03. Phase 1 — Stabilisation ── -->
+<section id="phase1">
+  <div class="container">
+    <span class="section-num">03 — Stabilisation</span>
+
+    <div class="phase-header">
+      <div class="phase-badge">
+        <span class="phase-num">Phase</span>
+        <span class="phase-label">1</span>
+      </div>
+      <div class="phase-header-text">
+        <h2>Jours 1–30 — Stabilisation &amp; Écoute</h2>
+        <span class="phase-time">Priorité absolue : ne rien casser</span>
+      </div>
+    </div>
+
+    <p class="section-sub" style="margin-bottom: 40px;">
+      La confiance se construit sur le plancher. Le premier mois est 80 % écoute, 20 % structure. Chaque action rapide est choisie pour démontrer la compétence, pas pour imposer l'ego.
+    </p>
+
+    <div class="week-grid">
+
+      <div class="week-item">
+        <div class="week-label">
+          <span class="wnum">Semaine 1</span>
+          <span class="wtime">Jours 1–7</span>
+        </div>
+        <div class="week-content">
+          <h3>80 % sur le plancher. Écouter.</h3>
+          <ul>
+            <li>80 % du temps sur le plancher ou avec les équipes terrain — observer, ne pas juger</li>
+            <li>1:1 avec chaque employé — 3 questions : "Qu'est-ce qui marche bien? Qu'est-ce qui te frustre? Si tu étais propriétaire, que changerais-tu?"</li>
+            <li>Cartographier qui fait vraiment quoi — vs l'organigramme formel</li>
+            <li>Identifier le goulot d'étranglement principal (TOC) — une seule contrainte à la fois</li>
+            <li>Commencer le journal quotidien des observations de terrain</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="week-item">
+        <div class="week-label">
+          <span class="wnum">Semaine 2</span>
+          <span class="wtime">Jours 8–14</span>
+        </div>
+        <div class="week-content">
+          <h3>Réalité vs perception. Clients clés.</h3>
+          <ul>
+            <li>Cartographier l'écart entre ce que la direction croit et ce que les équipes vivent</li>
+            <li>Rencontrer les 10 meilleurs clients — appels de 15 min, questions ouvertes sur la satisfaction</li>
+            <li>Mettre en place le rapport hebdomadaire trésorerie et AR — première photo du bilan de santé</li>
+            <li>Identifier les 2–3 "quick wins" visibles pour l'équipe (sans restructurer)</li>
+            <li>Valider les chiffres de diligence avec la réalité terrain</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="week-item">
+        <div class="week-label">
+          <span class="wnum">Semaine 3</span>
+          <span class="wtime">Jours 15–21</span>
+        </div>
+        <div class="week-content">
+          <h3>EOS Semaine 1. Cadence. Dashboard.</h3>
+          <ul>
+            <li>Introduction EOS — première réunion d'équipe de direction 90 minutes (pas plus)</li>
+            <li>Installer la cadence hebdomadaire — même jour, même heure, même format</li>
+            <li>Construire le tableau de bord 10 chiffres — en collaboration avec l'équipe, pas imposé</li>
+            <li>Définir les 3 priorités trimestrielles (Rocks) avec l'équipe de gestion</li>
+            <li>Premier suivi trésorerie hebdomadaire — établir la baseline DSO</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="week-item">
+        <div class="week-label">
+          <span class="wnum">Semaine 4</span>
+          <span class="wtime">Jours 22–30</span>
+        </div>
+        <div class="week-content">
+          <h3>Plan 90 jours. Contrainte unique. 2 victoires rapides.</h3>
+          <ul>
+            <li>Présenter le plan 90 jours à l'équipe — simple, visuel, 3 priorités maximum</li>
+            <li>Activer le levier sur la contrainte TOC identifiée en semaine 1</li>
+            <li>Livrer 2 victoires rapides visibles — choisies pour l'impact d'équipe, pas BAIIA</li>
+            <li>Valider que le tableau de bord est rempli par l'équipe, pas par nous</li>
+            <li>Bilan du mois 1 — résumé écrit partagé avec investisseurs</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="warning-box">
+      <div class="warning-title">Ne pas faire — Jours 1 à 30</div>
+      <ul>
+        <li>Aucun changement de prix dans les 30 premiers jours — attendre d'avoir la confiance de l'équipe</li>
+        <li>Aucune restructuration d'équipe ni de poste — observer d'abord, bouger ensuite</li>
+        <li>Aucun déploiement de multiples outils technologiques simultanément — un outil à la fois</li>
+        <li>Ne pas prendre de décisions majeures avant d'avoir passé au moins 2 semaines sur le plancher</li>
+        <li>Éviter les annonces publiques de changements avant que l'équipe soit alignée et informée</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── 04. Phase 2 — Sprint d'amélioration ── -->
+<section id="phase2">
+  <div class="container">
+    <span class="section-num">04 — Amélioration</span>
+
+    <div class="phase-header">
+      <div class="phase-badge">
+        <span class="phase-num">Phase</span>
+        <span class="phase-label">2</span>
+      </div>
+      <div class="phase-header-text">
+        <h2>Mois 2–6 — Sprint d'amélioration opérationnelle</h2>
+        <span class="phase-time">6 leviers · Exécution séquentielle basée sur TOC</span>
+      </div>
+    </div>
+
+    <p class="section-sub" style="margin-bottom: 8px;">
+      Six leviers d'amélioration, exécutés dans l'ordre de retour sur investissement. Chaque levier a des métriques de succès définies avant de commencer.
+    </p>
+
+    <div class="lever-grid">
+
+      <div class="lever-item">
+        <div class="lever-num">1</div>
+        <div class="lever-text">
+          <h3>Ingénierie des prix</h3>
+          <p>Benchmarker les tarifs contre 3 compétiteurs directs. Identifier les zones de sous-tarification chronique. Installer un plancher de marge par catégorie de devis — aucun contrat en dessous du seuil. Augmentation de prix graduelle aux clients C en priorité.</p>
+        </div>
+        <div class="lever-impact">+3 à 6 % BAIIA</div>
+      </div>
+
+      <div class="lever-item">
+        <div class="lever-num">2</div>
+        <div class="lever-text">
+          <h3>Productivité main-d'œuvre</h3>
+          <p>Déployer un logiciel de dispatch (Jobber, ServiceTitan ou Simpro selon le secteur). Optimiser les routes et l'affectation des techniciens. Mesurer le taux d'utilisation MO hebdomadairement. Cible : 75–85 % de temps facturable. LER minimum 2.0x.</p>
+        </div>
+        <div class="lever-impact">+2 à 5 % BAIIA</div>
+      </div>
+
+      <div class="lever-item">
+        <div class="lever-num">3</div>
+        <div class="lever-text">
+          <h3>Lean shop — 5S &amp; gestion visuelle</h3>
+          <p>Événement 5S complet sur l'atelier principal (1 journée complète avec toute l'équipe). Installer la gestion visuelle — chaque outil à sa place, chaque processus visible. Habitude lean quotidienne 2 Second Lean. Cible : éliminer 20–40 % du gaspillage de temps.</p>
+        </div>
+        <div class="lever-impact">+1 à 3 % BAIIA</div>
+      </div>
+
+      <div class="lever-item">
+        <div class="lever-num">4</div>
+        <div class="lever-text">
+          <h3>Ventes &amp; CRM — Segmentation clients</h3>
+          <p>Segmentation A/B/C complète de la base clients sur critères : marge, volume, loyauté, facilité. Activer la prospection active vers les clients A idéaux. Sortir graduellement des clients C destructeurs de marge. Installer des contrats de maintenance récurrents — cible &gt;30 % revenus récurrents.</p>
+        </div>
+        <div class="lever-impact">+1 à 2 % BAIIA</div>
+      </div>
+
+      <div class="lever-item">
+        <div class="lever-num">5</div>
+        <div class="lever-text">
+          <h3>Achats &amp; approvisionnement</h3>
+          <p>Consolider les fournisseurs — de 15–20 fournisseurs actifs à 5–7 partenaires stratégiques. Installer un système de bons de commande (PO). Définir des points de réapprovisionnement automatique pour les consommables clés. Négocier des escomptes de volume sur les 3–5 principaux fournisseurs.</p>
+        </div>
+        <div class="lever-impact">+1 à 3 % BAIIA</div>
+      </div>
+
+      <div class="lever-item">
+        <div class="lever-num">6</div>
+        <div class="lever-text">
+          <h3>Contrôles financiers</h3>
+          <p>Déployer Profit First — comptes bancaires séparés pour profit, impôts, opérations. Plancher de marge brute sur chaque devis — refus automatique en dessous du seuil. DSO cible &lt;35 jours — processus de facturation le jour même de la livraison. Fermeture mensuelle des livres en moins de 1 jour ouvrable.</p>
+        </div>
+        <div class="lever-impact">+1 à 2 % BAIIA</div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<!-- ── 05. Phase 3 — Tech ── -->
+<section id="phase3">
+  <div class="container">
+    <span class="section-num">05 — Technologie</span>
+
+    <div class="phase-header">
+      <div class="phase-badge">
+        <span class="phase-num">Phase</span>
+        <span class="phase-label">3</span>
+      </div>
+      <div class="phase-header-text">
+        <h2>Déploiement technologique — Échelle de maturité digitale</h2>
+        <span class="phase-time">Maintenant → Q2 → Q3+ · Un outil à la fois</span>
+      </div>
+    </div>
+
+    <p class="section-sub" style="margin-bottom: 8px;">
+      La technologie amplifie les processus — elle ne les remplace pas. On déploie seulement quand le processus humain est stable. Chaque outil est mesuré sur son ROI dans les 90 premiers jours.
+    </p>
+
+    <div class="ladder-grid">
+
+      <div class="ladder-card active">
+        <div class="ladder-badge">Maintenant — Mois 1–3</div>
+        <h3>Fondations opérationnelles</h3>
+        <ul>
+          <li>QuickBooks — comptabilité, facturation, états financiers mensuels</li>
+          <li>Jobber / ServiceTitan / Simpro — dispatch, scheduling, suivi techniciens</li>
+          <li>HubSpot CRM — pipeline clients, suivi devis, segmentation A/B/C</li>
+          <li>Devis digitaux avec plancher de marge automatique</li>
+          <li>Rapports trésorerie hebdo — automatisés depuis QuickBooks</li>
+        </ul>
+      </div>
+
+      <div class="ladder-card">
+        <div class="ladder-badge">Q2 — Mois 4–6</div>
+        <h3>Intelligence opérationnelle</h3>
+        <ul>
+          <li>Float — prévisions de trésorerie 13 semaines en temps réel</li>
+          <li>Fathom Reporting — tableaux de bord BAIIA et KPIs automatisés</li>
+          <li>Route AI — optimisation des tournées techniciens</li>
+          <li>Suivis automatiques clients post-service (satisfaction + upsell)</li>
+          <li>Estimation IA — base de données historique + devis intelligents</li>
+        </ul>
+      </div>
+
+      <div class="ladder-card">
+        <div class="ladder-badge">Q3+ — Mois 7+</div>
+        <h3>Avantage compétitif durable</h3>
+        <ul>
+          <li>IoT monitoring — capteurs sur équipements clients pour maintenance prédictive</li>
+          <li>Guidage terrain en réalité augmentée — techniciens assistés par IA</li>
+          <li>Maintenance prédictive — modèles ML sur historique interventions</li>
+          <li>Intégrations fournisseurs automatisées — PO et réapprovisionnement</li>
+          <li>Tableau de bord investisseur en temps réel — accès partenaires</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="highlight-box">
+      <p>
+        <strong>Principe cardinal :</strong> Chaque outil déployé doit avoir un ROI mesurable défini avant le lancement. Si le processus humain n'est pas stable, aucun outil technologique n'est déployé. L'IA amplifie — elle ne cache pas le désordre.
+      </p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── 06. Value Bridge ── -->
+<section id="valuebridge">
+  <div class="container">
+    <span class="section-num">06 — Impact financier</span>
+    <h2 class="section-title">Pont de valeur</h2>
+    <p class="section-sub">
+      Exemple concret sur une entreprise de 3 M$ de revenus — 15 % BAIIA à l'entrée. Chaque levier est modélisé séparément avec des hypothèses conservatrices.
+    </p>
+
+    <div class="value-bridge">
+      <div class="bridge-header">
+        <h3>Pont de valeur — Entreprise cible 3 M$ de revenus</h3>
+      </div>
+
+      <div class="bridge-row br-entry">
+        <div class="br-label">BAIIA à l'entrée (15 %)</div>
+        <div class="br-amount">450 K$</div>
+        <div class="br-pct">base</div>
+      </div>
+
+      <div class="bridge-row br-lever">
+        <div class="br-label">+ Discipline des prix (Levier 1)</div>
+        <div class="br-amount">+90 K$</div>
+        <div class="br-pct">+3 %</div>
+      </div>
+
+      <div class="bridge-row br-lever">
+        <div class="br-label">+ Productivité main-d'œuvre (Levier 2)</div>
+        <div class="br-amount">+75 K$</div>
+        <div class="br-pct">+2.5 %</div>
+      </div>
+
+      <div class="bridge-row br-lever">
+        <div class="br-label">+ Optimisation achats (Levier 5)</div>
+        <div class="br-amount">+45 K$</div>
+        <div class="br-pct">+1.5 %</div>
+      </div>
+
+      <div class="bridge-row br-lever">
+        <div class="br-label">+ Segmentation clients A/B/C (Levier 4)</div>
+        <div class="br-amount">+40 K$</div>
+        <div class="br-pct">+1.3 %</div>
+      </div>
+
+      <div class="bridge-row br-exit">
+        <div class="br-label">BAIIA à la sortie (+56 %)</div>
+        <div class="br-amount">700 K$</div>
+        <div class="br-pct">23 %</div>
+      </div>
+
+      <hr class="bridge-divider" />
+
+      <div class="bridge-row br-val">
+        <div class="br-label">Valorisation entrée (4–6x BAIIA)</div>
+        <div class="br-amount">1.8–2.7 M$</div>
+        <div class="br-pct">multiple</div>
+      </div>
+
+      <div class="bridge-row br-val">
+        <div class="br-label">Valorisation sortie (5–6x BAIIA)</div>
+        <div class="br-amount">3.5–4.2 M$</div>
+        <div class="br-pct">multiple</div>
+      </div>
+
+      <div class="bridge-row" style="background: rgba(74,158,255,0.04);">
+        <div class="br-label" style="font-weight: 800; color: var(--blue);">Valeur créée — Alpha opérationnel pur</div>
+        <div class="br-amount" style="color: var(--blue); font-size: 18px; font-weight: 800;">1.7–2.4 M$</div>
+        <div class="br-pct" style="color: var(--muted);">sur 3–5 ans</div>
+      </div>
+
+    </div>
+
+    <div class="moat-grid" style="margin-top: 32px;">
+      <div class="moat-card">
+        <div class="moat-num">56</div>
+        <div class="moat-title">% d'amélioration BAIIA</div>
+        <div class="moat-body">De 450 K$ à 700 K$ — sans croissance des revenus. Pure amélioration opérationnelle sur l'existant. Chaque dollar est tracé à un levier spécifique et mesurable.</div>
+      </div>
+      <div class="moat-card">
+        <div class="moat-num">2.4M</div>
+        <div class="moat-title">Alpha opérationnel maximal</div>
+        <div class="moat-body">La différence entre un opérateur traditionnel et un opérateur natif IA appliquant ce playbook de manière rigoureuse. Le système est la stratégie.</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── 07. 10 KPIs ── -->
+<section id="kpis">
+  <div class="container">
+    <span class="section-num">07 — Tableau de bord</span>
+    <h2 class="section-title">Les 10 KPIs non négociables</h2>
+    <p class="section-sub">
+      Ces métriques sont mesurées sans exception. Si un KPI manque dans le rapport, la réunion de direction ne commence pas. La culture de la mesure commence par la discipline du reporting.
+    </p>
+
+    <div class="kpi-table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Indicateur</th>
+            <th style="text-align:center;">Cible</th>
+            <th style="text-align:center;">Fréquence</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="kpi-num">01</span></td>
+            <td>Marge brute %</td>
+            <td class="kpi-target">40–55 %</td>
+            <td><span class="kpi-freq">Mensuel</span></td>
+          </tr>
+          <tr>
+            <td><span class="kpi-num">02</span></td>
+            <td>Marge BAIIA %</td>
+            <td class="kpi-target">18–25 %+</td>
+            <td><span class="kpi-freq">Mensuel</span></td>
+          </tr>
+          <tr>
+            <td><span class="kpi-num">03</span></td>
+            <td>DSO — Délai de recouvrement</td>
+            <td class="kpi-target">&lt; 35 jours</td>
+            <td><span class="kpi-freq">Hebdo</span></td>
+          </tr>
+          <tr>
+            <td><span class="kpi-num">04</span></td>
+            <td>Taux d'utilisation main-d'œuvre</td>
+            <td class="kpi-target">75–85 %</td>
+            <td><span class="kpi-freq">Hebdo</span></td>
+          </tr>
+          <tr>
+            <td><span class="kpi-num">05</span></td>
+            <td>Labor Efficiency Ratio (LER)</td>
+            <td class="kpi-target">&gt; 2.0x</td>
+            <td><span class="kpi-freq">Mensuel</span></td>
+          </tr>
+          <tr>
+            <td><span class="kpi-num">06</span></td>
+            <td>Taux de résolution premier passage</td>
+            <td class="kpi-target">&gt; 85 %</td>
+            <td><span class="kpi-freq">Hebdo</span></td>
+          </tr>
+          <tr>
+            <td><span class="kpi-num">07</span></td>
+            <td>Taux devis-à-clôture</td>
+            <td class="kpi-target">55–70 %</td>
+            <td><span class="kpi-freq">Hebdo</span></td>
+          </tr>
+          <tr>
+            <td><span class="kpi-num">08</span></td>
+            <td>Revenus récurrents %</td>
+            <td class="kpi-target">&gt; 30 %</td>
+            <td><span class="kpi-freq">Mensuel</span></td>
+          </tr>
+          <tr>
+            <td><span class="kpi-num">09</span></td>
+            <td>Concentration revenus — Top 3 clients</td>
+            <td class="kpi-target">&lt; 35 %</td>
+            <td><span class="kpi-freq">Mensuel</span></td>
+          </tr>
+          <tr>
+            <td><span class="kpi-num">10</span></td>
+            <td>Ratio de couverture du pipeline</td>
+            <td class="kpi-target">&gt; 2.5x</td>
+            <td><span class="kpi-freq">Hebdo</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="highlight-box" style="margin-top: 32px;">
+      <p>
+        <strong>Règle du tableau de bord :</strong> Ces 10 chiffres sont présentés en 15 minutes maximum au début de chaque réunion EOS hebdomadaire. Chaque chiffre a un propriétaire nommé qui est responsable de sa collecte et de son interprétation. Un chiffre rouge est une conversation, pas une punition.
+      </p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── 08. La preuve ── -->
+<section id="preuve">
+  <div class="container">
+    <span class="section-num">08 — Crédibilité</span>
+    <h2 class="section-title">Le playbook est la preuve</h2>
+    <p class="section-sub">
+      Pas de promesses — le système est documenté, les métriques sont définies, le calendrier est précis. Chaque phase montre comment la valeur est créée.
+    </p>
+
+    <div class="moat-grid" style="margin-top: 48px;">
+
+      <div class="moat-card">
+        <div class="moat-num">01</div>
+        <div class="moat-title">Système avant intuition</div>
+        <div class="moat-body">EOS, TOC, Lean, Profit First — chaque cadre a une date de déploiement et des métriques de succès. L'opérateur suit le système même quand l'intuition dit autre chose.</div>
+      </div>
+
+      <div class="moat-card">
+        <div class="moat-num">02</div>
+        <div class="moat-title">Mesurer avant d'agir</div>
+        <div class="moat-body">Aucun levier n'est activé sans une baseline établie. Aucun outil technologique n'est déployé sans ROI défini. On sait d'où on part pour prouver où on arrive.</div>
+      </div>
+
+      <div class="moat-card">
+        <div class="moat-num">03</div>
+        <div class="moat-title">Terrain avant bureau</div>
+        <div class="moat-body">80 % du temps en semaine 1 sur le plancher. Les décisions émergent de l'observation réelle, pas des états financiers seuls. La confiance se bâtit là où le travail se fait.</div>
+      </div>
+
+      <div class="moat-card">
+        <div class="moat-num">04</div>
+        <div class="moat-title">Une contrainte à la fois</div>
+        <div class="moat-body">TOC appliqué rigoureusement — identifier le goulot, élever le goulot, répéter. Pas de changements simultanés. Pas de réorganisation sans stabilisation. La discipline crée la vitesse.</div>
+      </div>
+
+    </div>
+
+    <div class="highlight-box" style="margin-top: 40px;">
+      <p>
+        <strong>"Les 100 premiers jours déterminent la création ou la destruction de valeur."</strong><br />
+        — Walker Deibel, Buy Then Build. Ce playbook existe pour que ces 100 jours soient exécutés avec précision chirurgicale, pas avec de bonnes intentions.
+      </p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── Footer ── -->
+<footer>
+  <div class="container">
+    <div class="footer-logo">Groupe <span>Morissette</span></div>
+    <div class="confidentiality">
+      <strong style="color: var(--muted);">DOCUMENT CONFIDENTIEL &amp; PROPRIÉTAIRE</strong><br />
+      Ce playbook opérationnel est la propriété exclusive de Groupe Morissette. Il contient des informations stratégiques, des méthodologies propriétaires et des données financières confidentielles. Toute reproduction, distribution ou divulgation à des tiers sans autorisation écrite préalable est strictement interdite. Ce document est destiné uniquement aux partenaires opérationnels et investisseurs autorisés.<br /><br />
+      Groupe Morissette · Québec, Canada · 2025 · Playbook Opérationnel v2
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

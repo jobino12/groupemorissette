@@ -1,0 +1,1267 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Groupe Morissette — Investisseurs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Reset & Base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0a0a0b;
+      --bg-card:   #111114;
+      --bg-card2:  #16161a;
+      --border:    #222228;
+      --accent:    #e8a020;
+      --accent-dim:#b87d18;
+      --text:      #f0f0f0;
+      --muted:     #888899;
+      --muted2:    #555566;
+      --green:     #2ecc71;
+      --blue:      #4a9eff;
+      --radius:    12px;
+      --radius-sm: 6px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Layout ── */
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    section {
+      padding: 100px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    section:last-of-type { border-bottom: none; }
+
+    /* ── Section Labels ── */
+    .section-num {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .section-title {
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 16px;
+      color: var(--text);
+    }
+
+    .section-sub {
+      font-size: 18px;
+      color: var(--muted);
+      max-width: 640px;
+      line-height: 1.7;
+    }
+
+    /* ── Header Bar ── */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10, 10, 11, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 0;
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .logo {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: var(--text);
+    }
+
+    .logo span { color: var(--accent); }
+
+    .confidential-badge {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted2);
+      border: 1px solid var(--border);
+      padding: 4px 10px;
+      border-radius: 100px;
+    }
+
+    /* ── Hero ── */
+    #hero {
+      padding: 120px 0 100px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .hero-eyebrow {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      border: 1px solid var(--accent-dim);
+      padding: 5px 14px;
+      border-radius: 100px;
+      margin-bottom: 32px;
+    }
+
+    .hero-title {
+      font-size: clamp(36px, 6vw, 64px);
+      font-weight: 900;
+      line-height: 1.08;
+      letter-spacing: -0.02em;
+      margin-bottom: 20px;
+    }
+
+    .hero-title .line-accent {
+      color: var(--accent);
+      display: block;
+    }
+
+    .hero-thesis {
+      font-size: clamp(18px, 2.5vw, 22px);
+      color: var(--muted);
+      font-weight: 400;
+      max-width: 600px;
+      line-height: 1.6;
+      margin-bottom: 56px;
+    }
+
+    .metrics-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .metric-chip {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .metric-chip .val {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1;
+    }
+
+    .metric-chip .lbl {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    /* ── Cards Grid ── */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      margin-top: 48px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px 24px;
+      position: relative;
+      transition: border-color 0.2s;
+    }
+
+    .card:hover { border-color: var(--muted2); }
+
+    .card-icon {
+      font-size: 28px;
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: var(--text);
+    }
+
+    .card-body {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    /* ── Big Statement ── */
+    .big-statement {
+      font-size: clamp(22px, 3.5vw, 36px);
+      font-weight: 800;
+      line-height: 1.25;
+      color: var(--text);
+      max-width: 760px;
+      margin-bottom: 20px;
+    }
+
+    .big-statement em {
+      color: var(--accent);
+      font-style: normal;
+    }
+
+    /* ── Highlight Box ── */
+    .highlight-box {
+      background: linear-gradient(135deg, rgba(232,160,32,0.08) 0%, rgba(232,160,32,0.03) 100%);
+      border: 1px solid rgba(232,160,32,0.25);
+      border-radius: var(--radius);
+      padding: 28px 32px;
+      margin-top: 40px;
+    }
+
+    .highlight-box p {
+      font-size: 16px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .highlight-box strong { color: var(--text); }
+
+    /* ── Thesis pillars ── */
+    .thesis-list {
+      margin-top: 48px;
+      display: grid;
+      gap: 2px;
+    }
+
+    .thesis-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+      padding: 24px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .thesis-item:last-child { border-bottom: none; }
+
+    .thesis-num {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+      min-width: 28px;
+      padding-top: 3px;
+    }
+
+    .thesis-content h3 {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+
+    .thesis-content p {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    /* ── Founder block ── */
+    .founder-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: start;
+      margin-top: 48px;
+    }
+
+    .founder-arc {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .arc-item {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .arc-item:last-child { border-bottom: none; }
+
+    .arc-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      margin-top: 7px;
+      flex-shrink: 0;
+    }
+
+    .arc-text h4 {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .arc-text p {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .founder-quote {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: var(--radius);
+      padding: 32px;
+    }
+
+    .founder-quote blockquote {
+      font-size: 17px;
+      font-weight: 500;
+      line-height: 1.65;
+      color: var(--text);
+      font-style: italic;
+      margin-bottom: 20px;
+    }
+
+    .founder-quote cite {
+      font-size: 13px;
+      color: var(--muted);
+      font-style: normal;
+      font-weight: 600;
+    }
+
+    /* ── Flywheel ── */
+    .moat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 48px;
+    }
+
+    .moat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .moat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--accent);
+      opacity: 0.6;
+    }
+
+    .moat-num {
+      font-size: 48px;
+      font-weight: 900;
+      color: var(--border);
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .moat-title {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: var(--accent);
+    }
+
+    .moat-body {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    /* ── Phase Timeline ── */
+    .phase-list {
+      margin-top: 48px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .phase-item {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      gap: 0;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .phase-label {
+      background: var(--bg-card2);
+      border-right: 1px solid var(--border);
+      padding: 24px 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .phase-label .pnum {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .phase-label .ptime {
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .phase-content {
+      padding: 24px 28px;
+    }
+
+    .phase-content h3 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+
+    .phase-content p {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    /* ── AI Levers ── */
+    .lever-list {
+      margin-top: 48px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .lever-item {
+      display: grid;
+      grid-template-columns: 56px 1fr auto;
+      align-items: start;
+      gap: 20px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px 28px;
+    }
+
+    .lever-icon-wrap {
+      width: 48px;
+      height: 48px;
+      background: rgba(232,160,32,0.1);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+    }
+
+    .lever-text h3 {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .lever-text p {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .lever-tag {
+      background: rgba(46,204,113,0.1);
+      border: 1px solid rgba(46,204,113,0.2);
+      color: var(--green);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: 100px;
+      white-space: nowrap;
+    }
+
+    /* ── Financial Table ── */
+    .fin-table-wrap {
+      margin-top: 48px;
+      overflow-x: auto;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    thead tr {
+      background: var(--bg-card2);
+    }
+
+    thead th {
+      padding: 14px 16px;
+      text-align: right;
+      font-weight: 600;
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: 0.04em;
+      border-bottom: 1px solid var(--border);
+    }
+
+    thead th:first-child { text-align: left; }
+
+    tbody tr {
+      border-bottom: 1px solid var(--border);
+      transition: background 0.15s;
+    }
+
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: var(--bg-card2); }
+
+    tbody td {
+      padding: 14px 16px;
+      text-align: right;
+      color: var(--muted);
+    }
+
+    tbody td:first-child {
+      text-align: left;
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .row-accent td {
+      color: var(--accent) !important;
+      font-weight: 700 !important;
+      background: rgba(232,160,32,0.04);
+    }
+
+    .row-green td {
+      color: var(--green) !important;
+      font-weight: 700 !important;
+    }
+
+    /* ── Financing Breakdown ── */
+    .financing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+      margin-top: 48px;
+    }
+
+    .fin-slice {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px 20px;
+      text-align: center;
+    }
+
+    .fin-slice .pct {
+      font-size: 32px;
+      font-weight: 900;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .fin-slice .amt {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .fin-slice .src {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .color-equity  { color: var(--accent); }
+    .color-bdc     { color: var(--blue); }
+    .color-desj    { color: #a855f7; }
+    .color-vendor  { color: var(--green); }
+
+    /* ── CTA Block ── */
+    .cta-block {
+      margin-top: 56px;
+      background: linear-gradient(135deg, rgba(232,160,32,0.1) 0%, rgba(232,160,32,0.03) 100%);
+      border: 1px solid rgba(232,160,32,0.3);
+      border-radius: var(--radius);
+      padding: 48px 40px;
+      text-align: center;
+    }
+
+    .cta-block h3 {
+      font-size: 24px;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+
+    .cta-block p {
+      font-size: 16px;
+      color: var(--muted);
+      margin-bottom: 32px;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .cta-email {
+      display: inline-block;
+      background: var(--accent);
+      color: #000;
+      font-size: 15px;
+      font-weight: 700;
+      padding: 14px 32px;
+      border-radius: var(--radius-sm);
+      text-decoration: none;
+      letter-spacing: 0.02em;
+    }
+
+    /* ── Footer ── */
+    footer {
+      padding: 48px 0;
+      text-align: center;
+    }
+
+    .footer-logo {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--muted2);
+      margin-bottom: 16px;
+    }
+
+    .footer-logo span { color: var(--muted); }
+
+    .confidentiality {
+      font-size: 12px;
+      color: var(--muted2);
+      max-width: 620px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    /* ── Tag Pills ── */
+    .tag {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 100px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      margin-right: 6px;
+      margin-bottom: 6px;
+    }
+
+    .tag-accent { border-color: var(--accent-dim); color: var(--accent); }
+
+    /* ── Divider ── */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 40px 0;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 720px) {
+      section { padding: 72px 0; }
+
+      .founder-grid { grid-template-columns: 1fr; gap: 32px; }
+      .moat-grid    { grid-template-columns: 1fr; }
+
+      .phase-item {
+        grid-template-columns: 1fr;
+      }
+
+      .phase-label {
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        padding: 16px 20px;
+      }
+
+      .lever-item {
+        grid-template-columns: 48px 1fr;
+      }
+
+      .lever-tag {
+        display: none;
+      }
+
+      .metrics-row {
+        gap: 8px;
+      }
+
+      .metric-chip {
+        flex: 1 1 calc(50% - 4px);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hero-title { font-size: 32px; }
+      .metric-chip { flex: 1 1 100%; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Header ── -->
+<header>
+  <div class="header-inner">
+    <div class="logo">Groupe <span>Morissette</span></div>
+    <div class="confidential-badge">Confidentiel · Investisseurs</div>
+  </div>
+</header>
+
+<!-- ── 00. Hero ── -->
+<section id="hero">
+  <div class="container">
+    <span class="hero-eyebrow">Mémo investisseur · 2025</span>
+    <h1 class="hero-title">
+      Groupe Morissette
+      <span class="line-accent">Le rollup IA des services industriels au Québec.</span>
+    </h1>
+    <p class="hero-thesis">
+      Acquérir, transformer et opérer les PME industrielles québécoises avec l'IA comme levier central — là où aucun opérateur natif n'existe encore.
+    </p>
+
+    <div class="metrics-row">
+      <div class="metric-chip">
+        <span class="val">70 %</span>
+        <span class="lbl">PME sans plan de relève</span>
+      </div>
+      <div class="metric-chip">
+        <span class="val">3 M$</span>
+        <span class="lbl">Cible d'acquisition (an 1)</span>
+      </div>
+      <div class="metric-chip">
+        <span class="val">20 %+</span>
+        <span class="lbl">BAIIA cible post-IA</span>
+        </div>
+      <div class="metric-chip">
+        <span class="val">25 %+</span>
+        <span class="lbl">TRI cible sur 8 ans</span>
+      </div>
+      <div class="metric-chip">
+        <span class="val">300 K$</span>
+        <span class="lbl">Tour de capital amorçage</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── 01. Le problème ── -->
+<section id="probleme">
+  <div class="container">
+    <span class="section-num">01 — Le problème</span>
+    <h2 class="section-title">Le problème n'est pas l'IA.<br>Ce sont les entreprises elles-mêmes.</h2>
+    <p class="section-sub">
+      Des milliers de PME industrielles québécoises sont rentables, essentielles — et complètement figées. Pas parce que le marché est difficile. Parce que leur structure interne ne peut plus évoluer.
+    </p>
+
+    <div class="card-grid">
+      <div class="card">
+        <span class="card-icon">&#128100;</span>
+        <div class="card-title">Pas de succession</div>
+        <div class="card-body">
+          70 % des PME industrielles n'ont aucun plan de relève. Le fondateur est l'entreprise. Quand il part, tout s'effondre — ou il vend à rabais à un concurrent.
+        </div>
+      </div>
+      <div class="card">
+        <span class="card-icon">&#128202;</span>
+        <div class="card-title">Pas de systèmes</div>
+        <div class="card-body">
+          La gestion tient dans un cahier, des courriels et la tête du propriétaire. Aucun ERP, aucun processus documenté, aucune donnée exploitable pour prendre des décisions.
+        </div>
+      </div>
+      <div class="card">
+        <span class="card-icon">&#129302;</span>
+        <div class="card-title">Pas d'opérateur natif IA</div>
+        <div class="card-body">
+          L'IA existe. Les outils existent. Mais personne dans ces entreprises n'a la capacité, le temps ni le mandat de les déployer. L'avantage reste théorique.
+        </div>
+      </div>
+    </div>
+
+    <div class="highlight-box">
+      <p>
+        Ce n'est pas une crise sectorielle — c'est une <strong>crise d'opérateur</strong>. Ces entreprises ont de la valeur, des clients fidèles, des marges saines. Ce qui leur manque, c'est quelqu'un qui peut entrer de l'intérieur, restructurer, et propulser avec les bons outils.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ── 02. La thèse ── -->
+<section id="these">
+  <div class="container">
+    <span class="section-num">02 — La thèse</span>
+    <h2 class="section-title">Pas de leader.<br>Pas de plateforme.<br>Pas d'opérateur natif IA.</h2>
+    <p class="section-sub">
+      La fragmentation n'est pas le problème. C'est la prime. Groupe Morissette ne fait pas de la consolidation ordinaire — il crée une nouvelle catégorie.
+    </p>
+
+    <div class="thesis-list">
+      <div class="thesis-item">
+        <div class="thesis-num">A</div>
+        <div class="thesis-content">
+          <h3>Un marché immense, sans consolidateur</h3>
+          <p>Des milliers d'entreprises de soudure, mécanique, travaux en hauteur, entretien industriel, services maritimes. Chacune est un îlot. Aucune plateforme ne les regroupe. Aucun acteur ne propose d'offre intégrée à l'échelle du Québec.</p>
+        </div>
+      </div>
+      <div class="thesis-item">
+        <div class="thesis-num">B</div>
+        <div class="thesis-content">
+          <h3>L'IA comme levier d'extraction de valeur, pas comme promesse</h3>
+          <p>Chaque acquisition est suivie d'un déploiement systématique : automatisation des devis, planification intelligente, suivi opérationnel en temps réel. Résultat mesurable : +4 à +7 points de BAIIA par entreprise acquise.</p>
+        </div>
+      </div>
+      <div class="thesis-item">
+        <div class="thesis-num">C</div>
+        <div class="thesis-content">
+          <h3>Création de catégorie, pas de simple M&A</h3>
+          <p>L'objectif n'est pas d'acheter des entreprises. C'est de devenir <em style="color:var(--accent);font-style:normal;">l'opérateur IA de référence au Québec industriel</em> — la marque vers qui les fondateurs se tournent naturellement au moment de vendre.</p>
+        </div>
+      </div>
+      <div class="thesis-item">
+        <div class="thesis-num">D</div>
+        <div class="thesis-content">
+          <h3>Timing irréversible</h3>
+          <p>La fenêtre de succession est ouverte maintenant. Dans 5 ans, les meilleures entreprises auront été absorbées par des fonds privés, des groupes étrangers, ou auront simplement fermé. Le premier opérateur à s'imposer comme référence gagne la catégorie.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── 03. Founder-Market Fit ── -->
+<section id="fondateur">
+  <div class="container">
+    <span class="section-num">03 — Founder-Market Fit</span>
+    <h2 class="section-title">Même terrain. Même secteur.<br>Maintenant avec l'IA.</h2>
+    <p class="section-sub">
+      Samuel Jobin-Morissette n'arrive pas de l'extérieur avec un PowerPoint. Il vient de l'intérieur — soudeur, plongeur, puis bâtisseur.
+    </p>
+
+    <div class="founder-grid">
+      <div class="founder-arc">
+        <div class="arc-item">
+          <div class="arc-dot"></div>
+          <div class="arc-text">
+            <h4>Soudeur certifié &amp; scaphandrier</h4>
+            <p>Formation technique complète. A travaillé sur le terrain — la chaleur, les délais, les marges serrées. Connaît les opérations de l'intérieur, pas en théorie.</p>
+          </div>
+        </div>
+        <div class="arc-item">
+          <div class="arc-dot"></div>
+          <div class="arc-text">
+            <h4>Formation en comptabilité</h4>
+            <p>Comprend les états financiers, les structures de coûts, les leviers de rentabilité. Capable de lire une entreprise industrielle autant techniquement que financièrement.</p>
+          </div>
+        </div>
+        <div class="arc-item">
+          <div class="arc-dot"></div>
+          <div class="arc-text">
+            <h4>Scaler 0 → 50 M$ en fintech</h4>
+            <p>A construit et piloté une croissance de zéro à 50 M$ dans un environnement réglementé et compétitif. Maîtrise la croissance structurée, l'équipe, et les systèmes à grande échelle.</p>
+          </div>
+        </div>
+        <div class="arc-item">
+          <div class="arc-dot"></div>
+          <div class="arc-text">
+            <h4>Opérateur IA natif</h4>
+            <p>Utilise quotidiennement les outils d'automatisation et d'IA. Capable de les déployer dans des contextes opérationnels concrets — pas seulement en back-office.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="founder-quote">
+        <blockquote>
+          "J'ai travaillé dans ces entreprises. Je sais ce que le propriétaire ressent à 5h du matin avant un chantier difficile. Et je sais ce que les outils d'aujourd'hui peuvent faire que les anciens opérateurs n'imaginent même pas encore."
+        </blockquote>
+        <cite>— Samuel Jobin-Morissette, fondateur</cite>
+
+        <hr class="divider" />
+
+        <div>
+          <span class="tag tag-accent">Soudeur certifié</span>
+          <span class="tag tag-accent">Scaphandrier</span>
+          <span class="tag tag-accent">Comptabilité</span>
+          <span class="tag tag-accent">Fintech 0→50M$</span>
+          <span class="tag tag-accent">IA opérationnelle</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── 04. Le fossé concurrentiel ── -->
+<section id="fosse">
+  <div class="container">
+    <span class="section-num">04 — Le fossé concurrentiel</span>
+    <h2 class="section-title">Un flywheel qui se renforce<br>à chaque acquisition.</h2>
+    <p class="section-sub">
+      Chaque entreprise intégrée ne s'additionne pas — elle multiplie. Les quatre moats s'accumulent et rendent le modèle de plus en plus difficile à répliquer.
+    </p>
+
+    <div class="moat-grid">
+      <div class="moat-card">
+        <div class="moat-num">01</div>
+        <div class="moat-title">Données propriétaires</div>
+        <div class="moat-body">
+          Chaque acquisition génère des données opérationnelles uniques : coûts de chantier, productivité par équipe, taux d'appel, cycle de vente. Ces données alimentent les modèles IA et créent un avantage informationnel impossible à copier sans les opérations réelles.
+        </div>
+      </div>
+      <div class="moat-card">
+        <div class="moat-num">02</div>
+        <div class="moat-title">Puissance de processus</div>
+        <div class="moat-body">
+          Les systèmes développés pour une entreprise (devis automatisés, planification IA, tableaux de bord) sont déployés à coût marginal nul dans chaque nouvelle acquisition. Le coût de transformation chute à chaque itération.
+        </div>
+      </div>
+      <div class="moat-card">
+        <div class="moat-num">03</div>
+        <div class="moat-title">Coûts de transfert</div>
+        <div class="moat-body">
+          Les clients industriels sont loyaux par nature — contrats pluriannuels, relations personnelles, certifications spécifiques. Une fois intégré à la plateforme Groupe Morissette, le coût de changement pour un client est élevé.
+        </div>
+      </div>
+      <div class="moat-card">
+        <div class="moat-num">04</div>
+        <div class="moat-title">Économies d'échelle</div>
+        <div class="moat-body">
+          Achats groupés, assurances mutualisées, équipe RH partagée, accès au capital plus favorable. Chaque nouvelle entité réduit les coûts fixes de toutes les autres. Le groupe est plus compétitif que la somme de ses parties.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── 05. Stratégie ── -->
+<section id="strategie">
+  <div class="container">
+    <span class="section-num">05 — Stratégie d'acquisition</span>
+    <h2 class="section-title">Quatre phases. Un seul objectif :<br>devenir la référence.</h2>
+    <p class="section-sub">
+      Un plan d'exécution en escalier — chaque phase valide le modèle et finance la suivante.
+    </p>
+
+    <div class="phase-list">
+      <div class="phase-item">
+        <div class="phase-label">
+          <div class="pnum">Phase 01</div>
+          <div class="ptime">Mois 0 – 12</div>
+        </div>
+        <div class="phase-content">
+          <h3>Plateforme — Première acquisition &amp; preuve de concept</h3>
+          <p>Acquérir une première PME industrielle (soudure, entretien ou services maritimes) à 3 M$ de valeur d'entreprise. Déployer les systèmes IA. Documenter l'amélioration des marges. Établir la structure holding. Créer le playbook reproductible.</p>
+        </div>
+      </div>
+      <div class="phase-item">
+        <div class="phase-label">
+          <div class="pnum">Phase 02</div>
+          <div class="ptime">An 1 – 3</div>
+        </div>
+        <div class="phase-content">
+          <h3>Tech — Codification du playbook &amp; accélération</h3>
+          <p>Formaliser les outils et processus en une infrastructure réplicable. Deuxième et troisième acquisition avec des délais d'intégration de plus en plus courts. Levée de financement institutionnel basé sur la performance prouvée de la Phase 01.</p>
+        </div>
+      </div>
+      <div class="phase-item">
+        <div class="phase-label">
+          <div class="pnum">Phase 03</div>
+          <div class="ptime">An 3 – 6</div>
+        </div>
+        <div class="phase-content">
+          <h3>Construction — Consolidation régionale</h3>
+          <p>Déploiement dans deux ou trois régions du Québec. Offre de services croisés entre les entités. Développement de la marque employeur pour attirer des talents techniques. Positionnement comme partenaire préférentiel des fondateurs qui cherchent une sortie.</p>
+        </div>
+      </div>
+      <div class="phase-item">
+        <div class="phase-label">
+          <div class="pnum">Phase 04</div>
+          <div class="ptime">An 6 – 8</div>
+        </div>
+        <div class="phase-content">
+          <h3>Scale — Événement de liquidité</h3>
+          <p>Groupe de 5 à 8 entreprises. Revenus consolidés significatifs. Soit vente stratégique à un fonds de PE ou un groupe industriel, soit refinancement et continuation. TRI cible 25 %+ pour les investisseurs amorçage.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── 06. Le playbook opérationnel ── -->
+<section id="playbook">
+  <div class="container">
+    <span class="section-num">06 — Le playbook opérationnel</span>
+    <h2 class="section-title">L'IA n'est pas la stratégie.<br>C'est le levier.</h2>
+    <p class="section-sub">
+      Trois leviers opérationnels concrets, déployés systématiquement dans chaque acquisition pour extraire +4 à +7 points de BAIIA.
+    </p>
+
+    <div class="lever-list">
+      <div class="lever-item">
+        <div class="lever-icon-wrap">&#128196;</div>
+        <div class="lever-text">
+          <h3>Automatisation des devis et de la facturation</h3>
+          <p>Les devis manuels prennent des heures et comportent des erreurs. Avec des gabarits intelligents et l'historique des chantiers, les devis sont générés en minutes, les marges sont protégées automatiquement, et la facturation suit sans délai. Outils : Claude, GPT-4o, logiciels ERP légers.</p>
+        </div>
+        <div class="lever-tag">+2 à +3 pts</div>
+      </div>
+      <div class="lever-item">
+        <div class="lever-icon-wrap">&#128197;</div>
+        <div class="lever-text">
+          <h3>Planification intelligente des équipes et du matériel</h3>
+          <p>Les conflits d'horaire, la sous-utilisation des équipements et les heures supplémentaires non planifiées sont les grands destructeurs de marge. La planification assistée par IA optimise l'affectation en temps réel selon les chantiers actifs et les disponibilités. Outils : automatisation de calendrier, alertes de surcharge, tableaux de bord opérationnels.</p>
+        </div>
+        <div class="lever-tag">+1 à +2 pts</div>
+      </div>
+      <div class="lever-item">
+        <div class="lever-icon-wrap">&#128200;</div>
+        <div class="lever-text">
+          <h3>Suivi de performance et tableaux de bord en temps réel</h3>
+          <p>Les propriétaires de PME prennent des décisions à partir d'intuitions et de chiffres vieux de 30 jours. Les tableaux de bord en temps réel permettent d'ajuster les prix, d'identifier les clients non rentables et de piloter la croissance sur des faits. Outils : Notion, Airtable, intégrations comptables, rapports IA hebdomadaires.</p>
+        </div>
+        <div class="lever-tag">+1 à +2 pts</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── 07. Modèle financier ── -->
+<section id="financier">
+  <div class="container">
+    <span class="section-num">07 — Modèle financier</span>
+    <h2 class="section-title">Un modèle conservateur.<br>Un upside asymétrique.</h2>
+    <p class="section-sub">
+      Projections sur 8 ans basées sur une première acquisition à 3 M$ de valeur d'entreprise, avec déploiement progressif du playbook IA. Les chiffres ci-dessous reflètent le scénario de base — une seule entité opérationnelle.
+    </p>
+
+    <div class="fin-table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Indicateur</th>
+            <th>An 1</th>
+            <th>An 2</th>
+            <th>An 3</th>
+            <th>An 5</th>
+            <th>An 8</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Revenus (k$)</td>
+            <td>1 800</td>
+            <td>2 100</td>
+            <td>2 500</td>
+            <td>4 200</td>
+            <td>7 500</td>
+          </tr>
+          <tr>
+            <td>BAIIA pré-IA (%)</td>
+            <td>14 %</td>
+            <td>15 %</td>
+            <td>16 %</td>
+            <td>17 %</td>
+            <td>18 %</td>
+          </tr>
+          <tr class="row-accent">
+            <td>BAIIA post-IA (%)</td>
+            <td>18 %</td>
+            <td>20 %</td>
+            <td>22 %</td>
+            <td>23 %</td>
+            <td>25 %</td>
+          </tr>
+          <tr>
+            <td>BAIIA ($, k$)</td>
+            <td>324</td>
+            <td>420</td>
+            <td>550</td>
+            <td>966</td>
+            <td>1 875</td>
+          </tr>
+          <tr>
+            <td>Multiple de sortie (x BAIIA)</td>
+            <td>—</td>
+            <td>—</td>
+            <td>—</td>
+            <td>—</td>
+            <td>5–6×</td>
+          </tr>
+          <tr class="row-green">
+            <td>Valeur d'entreprise cible (k$)</td>
+            <td>—</td>
+            <td>—</td>
+            <td>—</td>
+            <td>—</td>
+            <td>9 375 – 11 250</td>
+          </tr>
+          <tr class="row-green">
+            <td>TRI investisseurs (base)</td>
+            <td>—</td>
+            <td>—</td>
+            <td>—</td>
+            <td>—</td>
+            <td>25 %+</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="highlight-box" style="margin-top:24px;">
+      <p>
+        <strong>Note méthodologique :</strong> Les projections de revenus supposent une croissance organique modérée (3–5 %/an) combinée à l'amélioration des marges par l'IA. Les acquisitions supplémentaires (Phases 2–4) ne sont pas incluses dans ce modèle de base — elles constituent l'upside non modélisé. Le multiple de sortie de 5–6× BAIIA est conservateur pour le secteur des services industriels spécialisés.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ── 08. Structure de financement ── -->
+<section id="financement">
+  <div class="container">
+    <span class="section-num">08 — Structure de financement</span>
+    <h2 class="section-title">3,3 M$ de capacité d'acquisition.<br>300 K$ de levier.</h2>
+    <p class="section-sub">
+      Le capital d'amorçage de 300 K$ en équité propre sert d'ancrage pour mobiliser 3 M$ de financement institutionnel — un effet de levier de 10× sur le capital privé.
+    </p>
+
+    <div class="financing-grid">
+      <div class="fin-slice">
+        <div class="pct color-equity">10 %</div>
+        <div class="amt" style="color:var(--accent);">300 K$</div>
+        <div class="src">Équité privée<br>(Tour amorçage)</div>
+      </div>
+      <div class="fin-slice">
+        <div class="pct color-bdc">60 %</div>
+        <div class="amt" style="color:var(--blue);">1 800 K$</div>
+        <div class="src">BDC / Financement<br>institutionnel</div>
+      </div>
+      <div class="fin-slice">
+        <div class="pct color-desj">15 %</div>
+        <div class="amt" style="color:#a855f7;">450 K$</div>
+        <div class="src">Desjardins /<br>Banque commerciale</div>
+      </div>
+      <div class="fin-slice">
+        <div class="pct color-vendor">15 %</div>
+        <div class="amt" style="color:var(--green);">450 K$</div>
+        <div class="src">Billet vendeur<br>(Seller Takeback)</div>
+      </div>
+    </div>
+
+    <div class="highlight-box" style="margin-top:24px;">
+      <p>
+        <strong>Utilisation du capital d'amorçage :</strong> Les 300 K$ couvrent les frais de transaction (due diligence, légal, CPA), le fonds de roulement initial de 60 jours, le déploiement de l'infrastructure IA, et la réserve opérationnelle. Cet investissement n'est pas dilué avant la Phase 2 — les investisseurs amorçage bénéficient d'une protection anti-dilution pour les 18 premiers mois.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ── 09. Équipe et prochaines étapes ── -->
+<section id="equipe">
+  <div class="container">
+    <span class="section-num">09 — Équipe &amp; prochaines étapes</span>
+    <h2 class="section-title">Un fondateur. Un playbook.<br>Un moment.</h2>
+    <p class="section-sub">
+      La fenêtre de succession industrielle est ouverte maintenant. Les investisseurs qui entrent en Phase 01 bénéficient des conditions les plus avantageuses de toute la trajectoire du groupe.
+    </p>
+
+    <div class="card-grid" style="margin-bottom:48px;">
+      <div class="card">
+        <div class="card-title">Samuel Jobin-Morissette</div>
+        <div class="card-body" style="margin-bottom:16px;">
+          Soudeur certifié · Scaphandrier · Comptabilité · Ex-fintech (0→50 M$) · Opérateur IA. A bâti, géré et piloté des équipes dans des environnements réglementés et à haute pression — industriel comme financier.
+        </div>
+        <div>
+          <span class="tag">Opérateur</span>
+          <span class="tag">Bâtisseur</span>
+          <span class="tag">Technique</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Conseillers &amp; réseau</div>
+        <div class="card-body">
+          Réseau actif de courtiers en fusion-acquisition, experts CPA en PME industrielles, conseillers BDC et Desjardins. Accès au pipeline de transactions dès l'amorçage. Plusieurs cibles qualifiées en cours d'évaluation.
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Pipeline actuel</div>
+        <div class="card-body">
+          Trois entreprises cibles identifiées dans les secteurs soudure, entretien industriel et services spécialisés. Évaluations préliminaires complétées. Financement institutionnel pré-discuté avec BDC.
+        </div>
+      </div>
+    </div>
+
+    <div class="cta-block">
+      <h3>Intéressé à en savoir plus ?</h3>
+      <p>
+        Ce document est confidentiel et destiné aux investisseurs qualifiés. Pour recevoir le mémo complet, les états financiers projetés ou pour planifier un appel, contactez directement Samuel.
+      </p>
+      <a class="cta-email" href="mailto:samuel@groupemorissette.ca">
+        samuel@groupemorissette.ca
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ── Footer ── -->
+<footer>
+  <div class="container">
+    <div class="footer-logo">Groupe <span>Morissette</span></div>
+    <p class="confidentiality">
+      <strong>AVIS DE CONFIDENTIALITÉ :</strong> Ce document est strictement confidentiel et est destiné exclusivement à la personne ou l'entité à qui il a été remis. Il contient des informations propriétaires sur Groupe Morissette et ses projets d'affaires. Toute reproduction, distribution ou utilisation de ce document sans l'autorisation écrite expresse de Groupe Morissette est strictement interdite. Ce document ne constitue pas une offre de valeurs mobilières. Les projections financières sont présentées à titre illustratif seulement et ne constituent pas une garantie de rendement futur. Les investissements dans des entreprises privées comportent des risques importants, incluant la perte totale du capital investi.
+    </p>
+    <p style="margin-top:16px; font-size:12px; color:var(--muted2);">
+      &copy; 2025 Groupe Morissette. Tous droits réservés. · Québec, Canada
+    </p>
+  </div>
+</footer>
+
+</body>
+</html>
